@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page not found — BookHoard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #C4561A;
+      --cream:  #FDFAF3;
+      --dark:   #1C1410;
+      --muted:  #4A3728;
+      --card:   #FFF8EC;
+      --border: #E8DFC8;
+      --font:   system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: var(--font);
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a { color: var(--orange); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    a:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; border-radius: 3px; }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+    }
+    .nav-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+    .nav-logo:hover { text-decoration: none; opacity: 0.85; }
+    .nav-links { display: flex; gap: 0.25rem; list-style: none; }
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 0.75rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      border-radius: 6px;
+    }
+    .nav-links a:hover { color: var(--dark); background: var(--border); text-decoration: none; }
+
+    /* ── HERO ── */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 1.5rem;
+      text-align: center;
+    }
+
+    .error-inner {
+      max-width: 480px;
+    }
+
+    .error-code {
+      font-size: clamp(5rem, 18vw, 8rem);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 1rem;
+      user-select: none;
+    }
+
+    .error-inner h1 {
+      font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--dark);
+      margin-bottom: 0.75rem;
+    }
+
+    .error-inner p {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      line-height: 1.65;
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--orange);
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      min-height: 44px;
+      transition: opacity 0.15s;
+    }
+    .btn-home:hover { opacity: 0.88; text-decoration: none; }
+    .btn-home:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 1.5rem;
+    }
+    .footer-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .footer-links { display: flex; gap: 1.25rem; }
+    .footer-links a { color: var(--muted); }
+    .footer-links a:hover { color: var(--orange); text-decoration: none; }
+
+    @media (max-width: 480px) {
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="/" aria-label="BookHoard — home">BookHoard</a>
+      <ul class="nav-links" role="list">
+        <li><a href="/support.html">Support</a></li>
+        <li><a href="/privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <div class="error-inner">
+      <p class="error-code" aria-hidden="true">404</p>
+      <h1>Page not found</h1>
+      <p>The page you're looking for doesn't exist or may have moved. Head back home and we'll get you sorted.</p>
+      <a href="/" class="btn-home">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false">
+          <path fill-rule="evenodd" d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z" clip-rule="evenodd"/>
+        </svg>
+        Back to home
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>&copy; 2026 BookHoard</span>
+      <div class="footer-links">
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/support.html">Support</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

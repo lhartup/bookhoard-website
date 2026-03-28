@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support — BookHoard</title>
+  <meta name="description" content="Get help with BookHoard — frequently asked questions and contact information." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #C4561A;
+      --cream:  #FDFAF3;
+      --dark:   #1C1410;
+      --muted:  #4A3728;
+      --card:   #FFF8EC;
+      --border: #E8DFC8;
+      --font:   system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: var(--font);
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a { color: var(--orange); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    a:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; border-radius: 3px; }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+    }
+    .nav-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+    .nav-logo:hover { text-decoration: none; opacity: 0.85; }
+    .nav-links { display: flex; gap: 0.25rem; list-style: none; }
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 0.75rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      border-radius: 6px;
+    }
+    .nav-links a:hover { color: var(--dark); background: var(--border); text-decoration: none; }
+
+    /* ── CONTENT ── */
+    main { flex: 1; padding: 3rem 1.5rem 5rem; }
+
+    .content {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--dark);
+      margin-bottom: 0.4rem;
+    }
+    .page-header p {
+      font-size: 1rem;
+      color: var(--muted);
+    }
+
+    /* ── CONTACT CARD ── */
+    .contact-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .contact-icon {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      background: rgba(196, 86, 26, 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .contact-body h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.3rem;
+    }
+    .contact-body p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .contact-body a {
+      font-weight: 500;
+    }
+
+    /* ── FAQ ── */
+    .faq-section h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--dark);
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    details {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    details[open] {
+      border-color: var(--orange);
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--dark);
+      list-style: none;
+      min-height: 52px;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Remove default marker in all browsers */
+    summary::-webkit-details-marker { display: none; }
+    summary::marker { display: none; }
+
+    summary:hover {
+      background: rgba(196, 86, 26, 0.04);
+    }
+
+    /* Chevron icon */
+    .chevron {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      color: var(--muted);
+      transition: transform 0.2s ease;
+    }
+
+    details[open] .chevron {
+      transform: rotate(180deg);
+      color: var(--orange);
+    }
+
+    .faq-body {
+      padding: 0 1.25rem 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+
+    details[open] .faq-body {
+      border-top-color: rgba(196, 86, 26, 0.2);
+    }
+
+    .faq-body p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-top: 0.85rem;
+    }
+    .faq-body p + p { margin-top: 0.6rem; }
+
+    .faq-body ul {
+      margin: 0.6rem 0 0 1.2rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .faq-body li {
+      margin-bottom: 0.3rem;
+      line-height: 1.6;
+    }
+
+    .faq-body a { color: var(--orange); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 1.5rem;
+    }
+    .footer-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .footer-links { display: flex; gap: 1.25rem; }
+    .footer-links a { color: var(--muted); }
+    .footer-links a:hover { color: var(--orange); text-decoration: none; }
+
+    @media (max-width: 480px) {
+      main { padding: 2rem 1.25rem 4rem; }
+      .contact-card { flex-direction: column; gap: 0.75rem; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="/" aria-label="BookHoard — home">BookHoard</a>
+      <ul class="nav-links" role="list">
+        <li><a href="/support.html" aria-current="page">Support</a></li>
+        <li><a href="/privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <div class="content">
+
+      <header class="page-header">
+        <h1>BookHoard Support</h1>
+        <p>Find answers to common questions below, or get in touch — we're happy to help.</p>
+      </header>
+
+      <!-- Contact -->
+      <div class="contact-card" role="region" aria-label="Contact information">
+        <div class="contact-icon" aria-hidden="true">✉️</div>
+        <div class="contact-body">
+          <h2>Contact us</h2>
+          <p>Email us at <a href="mailto:support@bookhoardapp.com">support@bookhoardapp.com</a> and we'll get back to you as soon as we can.</p>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <section class="faq-section" aria-labelledby="faq-heading">
+        <h2 id="faq-heading">Frequently asked questions</h2>
+
+        <div class="faq-list">
+
+          <!-- Q1 -->
+          <details>
+            <summary>
+              How does shelf scanning work?
+              <svg class="chevron" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+              </svg>
+            </summary>
+            <div class="faq-body">
+              <p>Shelf scanning is a <strong>Hoard+</strong> feature. It lets you add multiple books at once by photographing a bookshelf. Tap the camera icon on the Library screen and select "Scan shelf." Point your camera at the spines of your books and take a photo.</p>
+              <p>BookHoard sends the image to an AI model which reads the titles and authors visible on the spines. You'll then see a list of recognised books to confirm before they're added to your library. The photo is not stored — it is used only for recognition and then discarded.</p>
+            </div>
+          </details>
+
+          <!-- Q2 -->
+          <details>
+            <summary>
+              How do AI recommendations work? What data is used?
+              <svg class="chevron" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+              </svg>
+            </summary>
+            <div class="faq-body">
+              <p>BookHoard analyses patterns in your library — which genres you read most, how you rate books, and what tags you use — to suggest titles you're likely to enjoy.</p>
+              <p>To generate recommendations, we send <strong>anonymised pattern data</strong> (genre breakdown, rating distributions, and tag patterns) to Anthropic's AI. For "Find Similar Books", the title of the book you are viewing is sent. We never send personal notes, your email address, or any other personally identifying information. See our <a href="/privacy.html">Privacy Policy</a> for full details.</p>
+            </div>
+          </details>
+
+          <!-- Q3 -->
+          <details>
+            <summary>
+              What is Hoard+? What do I get?
+              <svg class="chevron" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+              </svg>
+            </summary>
+            <div class="faq-body">
+              <p>Hoard+ is BookHoard's optional subscription for readers who want more. It unlocks:</p>
+              <ul>
+                <li>Shelf scanning — photograph a bookshelf and import multiple titles at once</li>
+                <li>AI-powered reading recommendations</li>
+                <li>Advanced library statistics and reading insights</li>
+                <li>Priority support</li>
+              </ul>
+              <p>You can view pricing and manage your subscription from <strong>Settings &rarr; Hoard+</strong> in the app.</p>
+            </div>
+          </details>
+
+          <!-- Q4 -->
+          <details>
+            <summary>
+              How do I delete my account and data?
+              <svg class="chevron" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+              </svg>
+            </summary>
+            <div class="faq-body">
+              <p>You can delete your account directly in the app. Go to <strong>Settings &rarr; Account &rarr; Delete Account</strong>. This will permanently delete your library data, account information, and all associated records from our systems.</p>
+              <p>If you're unable to access the app, email us at <a href="mailto:support@bookhoardapp.com">support@bookhoardapp.com</a> and we will process your deletion request manually.</p>
+            </div>
+          </details>
+
+          <!-- Q5 -->
+          <details>
+            <summary>
+              Why can't I scan a barcode?
+              <svg class="chevron" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+              </svg>
+            </summary>
+            <div class="faq-body">
+              <p>A few things to try if barcode scanning isn't working:</p>
+              <ul>
+                <li><strong>Check your internet connection.</strong> BookHoard needs an internet connection to look up book details after scanning. Make sure you're on Wi-Fi or have mobile data.</li>
+                <li><strong>Improve the lighting.</strong> Scanning works best in good light. Avoid dark rooms or direct glare on the barcode. Try moving near a window.</li>
+                <li><strong>Hold steady and get close.</strong> Position the barcode squarely within the scan frame and hold the phone still for a moment.</li>
+                <li><strong>Check camera permissions.</strong> Go to your iPhone's Settings app, find BookHoard, and make sure camera access is enabled.</li>
+              </ul>
+              <p>If none of these help, you can always add the book manually (see below).</p>
+            </div>
+          </details>
+
+          <!-- Q6 -->
+          <details>
+            <summary>
+              How do I add a book manually?
+              <svg class="chevron" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+              </svg>
+            </summary>
+            <div class="faq-body">
+              <p>To add a book without scanning, tap the <strong>+</strong> button on the Library screen and choose <strong>Search by title or author</strong>. Type the book's title or the author's name and select the correct result from the list.</p>
+              <p>If the book doesn't appear in search results, choose <strong>Add manually</strong> to enter the title, author, and other details yourself.</p>
+            </div>
+          </details>
+
+          <!-- Q7 -->
+          <details>
+            <summary>
+              What formats does BookHoard support?
+              <svg class="chevron" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+              </svg>
+            </summary>
+            <div class="faq-body">
+              <p>BookHoard supports three reading formats for each book in your library:</p>
+              <ul>
+                <li><strong>Physical</strong> — a print copy you own.</li>
+                <li><strong>Digital</strong> — an ebook (Kindle, Apple Books, Kobo, etc.).</li>
+                <li><strong>Audiobook</strong> — an audio edition (Audible, Libro.fm, etc.).</li>
+              </ul>
+              <p>You can own a book in more than one format — for example, if you have both a paperback and an audiobook edition. Each format can have its own reading status and notes.</p>
+            </div>
+          </details>
+
+          <!-- Q8 -->
+          <details>
+            <summary>
+              Is my data private?
+              <svg class="chevron" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+              </svg>
+            </summary>
+            <div class="faq-body">
+              <p>Yes. Your library is private to you. BookHoard does not sell your data, does not use your reading data for advertising, and does not share your book titles or notes with third parties.</p>
+              <p>Read our full <a href="/privacy.html">Privacy Policy</a> for complete details on what data is collected and how it is used.</p>
+            </div>
+          </details>
+
+        </div><!-- /faq-list -->
+      </section>
+
+    </div><!-- /content -->
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>&copy; 2026 BookHoard</span>
+      <div class="footer-links">
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/support.html">Support</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
