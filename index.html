@@ -184,6 +184,73 @@
       line-height: 1.6;
     }
 
+    /* ── BANNED BOOKS SECTION ── */
+    .banned-section {
+      padding: 4rem 1.5rem;
+      background: #1C1410;
+    }
+    .banned-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 3rem;
+      align-items: center;
+    }
+    .banned-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #E8695A;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    .banned-text h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #FDFAF3;
+      margin-bottom: 1rem;
+    }
+    .banned-text p {
+      font-size: 0.95rem;
+      color: #C4B898;
+      line-height: 1.75;
+      margin-bottom: 0.75rem;
+    }
+    .banned-free {
+      font-size: 0.875rem !important;
+      font-weight: 600;
+      color: #E8695A !important;
+    }
+    .banned-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .banned-badge-demo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      background: #2E1F16;
+      border: 1px solid #4A3728;
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+    }
+    .demo-emoji { font-size: 3rem; line-height: 1; }
+    .demo-badge {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #E8695A;
+      background: rgba(232, 105, 90, 0.12);
+      border: 1px solid rgba(232, 105, 90, 0.3);
+      border-radius: 8px;
+      padding: 0.4rem 0.85rem;
+      white-space: nowrap;
+    }
+
     /* ── FOOTER ── */
     footer {
       background: var(--card);
@@ -205,9 +272,26 @@
     .footer-links a { color: var(--muted); }
     .footer-links a:hover { color: var(--orange); text-decoration: none; }
 
+    /* Hero icon */
+    .hero-icon {
+      width: 90px;
+      height: 90px;
+      border-radius: 20px;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    }
+
+    @media (max-width: 640px) {
+      .banned-inner {
+        grid-template-columns: 1fr;
+      }
+      .banned-visual { display: none; }
+    }
+
     @media (max-width: 480px) {
       .hero { padding: 3.5rem 1.25rem 3rem; }
       .footer-inner { flex-direction: column; align-items: flex-start; }
+      .store-wrap { gap: 0.5rem; }
     }
   </style>
 </head>
@@ -226,21 +310,27 @@
   <main>
     <section class="hero" aria-labelledby="hero-heading">
       <div class="hero-inner">
+        <img src="/icon.png" alt="BookHoard app icon" class="hero-icon" />
         <span class="hero-eyebrow" aria-hidden="true">Coming soon</span>
         <h1 id="hero-heading"><span>Book</span>Hoard</h1>
         <p class="hero-tagline">Your books, everywhere you go</p>
         <p class="hero-desc">
-          Catalog your physical and digital library in one place. Scan barcodes and entire bookshelves with
-          your camera, discover your next read with AI-powered recommendations, and find independent bookstores near you.
+          Catalog your physical and digital library in one place. Scan barcodes and entire bookshelves, discover your next read with AI-powered recommendations, find indie bookstores and Little Free Libraries near you, and browse the books someone doesn't want you to read.
         </p>
         <div class="store-wrap">
+          <span class="store-badge" aria-label="Coming soon to Google Play — Android">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white" aria-hidden="true" focusable="false">
+              <path d="M3.18 23.76c.3.17.64.22.98.14l12.49-7.18-2.76-2.77-10.71 9.81zM.54 1.03C.2 1.35 0 1.9 0 2.62v18.76c0 .72.2 1.27.54 1.59l.08.08 10.51-10.51v-.25L.62.95.54 1.03zM20.33 9.67l-2.99-1.73-3.08 3.08 3.08 3.08 3-1.73c.86-.49.86-1.3 0-1.79l-.01.09zM3.18.24l12.49 7.18-2.76 2.77L2.2.38A1.21 1.21 0 0 1 3.18.24z"/>
+            </svg>
+            Coming Soon to Google Play
+          </span>
           <span class="store-badge" aria-label="Coming soon to the App Store — iOS">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="white" aria-hidden="true" focusable="false">
               <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
             </svg>
             Coming Soon to the App Store
           </span>
-          <span class="store-note">iOS app — available soon</span>
+          <span class="store-note">Android launching first &middot; iOS coming soon</span>
         </div>
       </div>
     </section>
@@ -267,7 +357,36 @@
           <div class="feature-card">
             <span class="feature-icon" aria-hidden="true">🗺️</span>
             <h3>Find indie bookstores</h3>
-            <p>Discover independent bookstores near you. Support local booksellers wherever you are in the world.</p>
+            <p>Discover independent bookstores and Little Free Libraries near you. Support local booksellers wherever you are.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon" aria-hidden="true">📥</span>
+            <h3>Goodreads import</h3>
+            <p>Already on Goodreads? Import your entire library in seconds — ratings, shelves, and reading status included. Free for everyone.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon" aria-hidden="true">📋</span>
+            <h3>NYT Bestseller lists</h3>
+            <p>Browse every New York Times Bestseller list in one place. Tap any title to add it to your library or wishlist.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Banned Books spotlight -->
+    <section class="banned-section" aria-labelledby="banned-heading">
+      <div class="banned-inner">
+        <div class="banned-text">
+          <p class="banned-eyebrow">The shelf they don't want you to read</p>
+          <h2 id="banned-heading">Books they tried to ban</h2>
+          <p>BookHoard tracks every book banned from US schools using data from PEN America's Index of School Book Bans — over 6,000 titles documented since 2021.</p>
+          <p>If a book in your library has been banned, you'll see exactly where, in which states and school districts, and how many times. You can also browse the full list and filter by state in the Discover tab.</p>
+          <p class="banned-free">Free for all users. No subscription required.</p>
+        </div>
+        <div class="banned-visual" aria-hidden="true">
+          <div class="banned-badge-demo">
+            <span class="demo-emoji">📖</span>
+            <span class="demo-badge">🚫 Banned in 32 states</span>
           </div>
         </div>
       </div>
