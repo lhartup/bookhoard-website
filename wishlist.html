@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookHoard Wishlist</title>
+  <meta name="description" content="A wishlist shared from the BookHoard app." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #C4561A;
+      --cream:  #FDFAF3;
+      --dark:   #1C1410;
+      --muted:  #4A3728;
+      --light:  #6B5E52;
+      --card:   #FFF8EC;
+      --border: #E8DFC8;
+      --tag-bg: #E8DFC8;
+      --font:   system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font);
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a { color: var(--orange); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+    }
+    .nav-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--orange);
+      text-decoration: none;
+    }
+    .nav-logo:hover { opacity: 0.85; text-decoration: none; }
+    .nav-link {
+      font-size: 0.875rem;
+      color: var(--muted);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+    }
+    .nav-link:hover { background: var(--border); text-decoration: none; color: var(--dark); }
+
+    /* ── MAIN ── */
+    main { flex: 1; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 3rem 1.5rem 2rem;
+      text-align: center;
+    }
+    .hero-inner { max-width: 680px; margin: 0 auto; }
+    .hero-emoji { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+    .hero p {
+      font-size: 1rem;
+      color: var(--light);
+    }
+    .book-count {
+      display: inline-block;
+      margin-top: 0.75rem;
+      background: var(--tag-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 0.3rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    /* ── BOOK LIST ── */
+    .book-list {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .book-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .book-cover {
+      width: 60px;
+      height: 88px;
+      border-radius: 5px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--border);
+    }
+    .book-cover-placeholder {
+      width: 60px;
+      height: 88px;
+      border-radius: 5px;
+      background: var(--border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .book-info { flex: 1; min-width: 0; }
+    .book-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.3;
+      margin-bottom: 0.2rem;
+    }
+    .book-author {
+      font-size: 0.875rem;
+      color: var(--light);
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── BUY LINKS ── */
+    .buy-section {}
+    .buy-primary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+    .buy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: var(--orange);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 7px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .buy-btn:hover { opacity: 0.88; text-decoration: none; }
+    .buy-btn.secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+    }
+    .buy-btn.secondary:hover { background: var(--border); color: var(--dark); }
+
+    .more-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.78rem;
+      color: var(--light);
+      padding: 0.2rem 0;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .more-stores {
+      display: none;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.4rem;
+    }
+    .more-stores.open { display: flex; }
+
+    /* ── STATES ── */
+    .state {
+      max-width: 680px;
+      margin: 4rem auto;
+      padding: 0 1.5rem;
+      text-align: center;
+    }
+    .state-emoji { font-size: 3rem; margin-bottom: 1rem; }
+    .state h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .state p { color: var(--light); font-size: 0.95rem; }
+
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── FOOTER CTA ── */
+    .cta {
+      background: var(--dark);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+    }
+    .cta-inner { max-width: 480px; margin: 0 auto; }
+    .cta h2 { font-size: 1.3rem; font-weight: 700; color: #FDFAF3; margin-bottom: 0.4rem; }
+    .cta p { font-size: 0.9rem; color: #B4A888; margin-bottom: 1.25rem; }
+    .cta-badges { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+    .badge {
+      display: inline-block;
+      background: var(--orange);
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 0.6rem 1.4rem;
+      border-radius: 10px;
+      text-decoration: none;
+    }
+    .badge:hover { opacity: 0.88; text-decoration: none; }
+    .badge.outline {
+      background: transparent;
+      border: 1.5px solid #4A3728;
+      color: #B4A888;
+    }
+    .badge.outline:hover { border-color: #B4A888; color: #FDFAF3; }
+
+    footer {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--light);
+    }
+    footer a { color: var(--light); }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 1.6rem; }
+      .book-card { padding: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">📚 BookHoard</a>
+      <a href="/support.html" class="nav-link">Help</a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Loading state -->
+    <div class="state" id="state-loading">
+      <div class="spinner"></div>
+      <p>Loading wishlist…</p>
+    </div>
+
+    <!-- Error state -->
+    <div class="state" id="state-error" style="display:none">
+      <div class="state-emoji">🔗</div>
+      <h2>Link not found</h2>
+      <p>This wishlist link may have expired or been reset.<br>Ask the sender to share it again.</p>
+    </div>
+
+    <!-- Empty state -->
+    <div class="state" id="state-empty" style="display:none">
+      <div class="state-emoji">⭐</div>
+      <h2>Wishlist is empty</h2>
+      <p>Nothing on this wishlist yet.</p>
+    </div>
+
+    <!-- Loaded state -->
+    <div id="state-loaded" style="display:none">
+      <div class="hero">
+        <div class="hero-inner">
+          <div class="hero-emoji">📚</div>
+          <h1>A BookHoard Wishlist</h1>
+          <p>These are books someone would love to own.</p>
+          <span class="book-count" id="book-count"></span>
+        </div>
+      </div>
+
+      <ul class="book-list" id="book-list" role="list"></ul>
+    </div>
+  </main>
+
+  <div class="cta">
+    <div class="cta-inner">
+      <h2>Track your own books with BookHoard</h2>
+      <p>Scan your shelves, get AI recommendations, and find banned books near you.</p>
+      <div class="cta-badges">
+        <a href="https://apps.apple.com/app/bookhoard/id6761315561" class="badge">App Store</a>
+        <a href="https://play.google.com/store/apps/details?id=com.lhartup.bookhoard" class="badge outline">Google Play</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p><a href="/">bookhoardapp.com</a> · <a href="/privacy.html">Privacy</a> · <a href="/support.html">Support</a></p>
+  </footer>
+
+  <script>
+    const SUPABASE_URL  = 'https://piahhiaadhdprbslddky.supabase.co';
+    const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpYWhoaWFhZGhkcHJic2xkZGt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NjM3MDEsImV4cCI6MjA4OTUzOTcwMX0.vHvTQmMV9uwtXR7kWJeSNG8ZjpoAnK0Dq0WKd7Y56uA';
+
+    function q(title, author) {
+      return encodeURIComponent(`${title} ${author || ''}`.trim());
+    }
+    function isbn13(isbn) {
+      return isbn && isbn.length === 13 ? isbn : null;
+    }
+
+    function storeLinks(title, author, isbn) {
+      const i = isbn || '';
+      const i13 = isbn13(isbn);
+      return [
+        {
+          label: 'Bookshop.org',
+          emoji: '📚',
+          sublabel: 'Supports indie bookstores',
+          url: i ? `https://bookshop.org/isbn/${i}` : `https://bookshop.org/search?keywords=${q(title, author)}`,
+          primary: true,
+        },
+        {
+          label: 'Amazon',
+          emoji: '🛒',
+          sublabel: 'New, used & marketplace',
+          url: i ? `https://www.amazon.com/s?k=${i}&i=stripbooks` : `https://www.amazon.com/s?k=${q(title, author)}&i=stripbooks`,
+          primary: true,
+        },
+        {
+          label: 'ThriftBooks',
+          emoji: '📦',
+          sublabel: 'Used & discounted',
+          url: i ? `https://www.thriftbooks.com/browse/?b.search=${i}` : `https://www.thriftbooks.com/browse/?b.search=${q(title, author)}`,
+          primary: false,
+        },
+        {
+          label: 'Barnes & Noble',
+          emoji: '🏪',
+          sublabel: 'In-store pickup',
+          url: i13 ? `https://www.barnesandnoble.com/w/?ean=${i13}` : `https://www.barnesandnoble.com/s/${q(title, author)}`,
+          primary: false,
+        },
+        {
+          label: 'Better World Books',
+          emoji: '🌍',
+          sublabel: 'Funds literacy',
+          url: i ? `https://www.betterworldbooks.com/search/results?q=${i}` : `https://www.betterworldbooks.com/search/results?q=${q(title, author)}`,
+          primary: false,
+        },
+        {
+          label: 'eBay',
+          emoji: '🛍️',
+          sublabel: 'New, used & collectible',
+          url: i ? `https://www.ebay.com/sch/i.html?_nkw=${i}&_sacat=267` : `https://www.ebay.com/sch/i.html?_nkw=${q(title, author)}&_sacat=267`,
+          primary: false,
+        },
+        {
+          label: 'Audible',
+          emoji: '🎧',
+          sublabel: 'Audiobook',
+          url: `https://www.audible.com/search?keywords=${q(title, author)}`,
+          primary: false,
+        },
+        {
+          label: 'Chirp',
+          emoji: '🎵',
+          sublabel: 'Discounted audiobooks',
+          url: `https://www.chirpbooks.com/search?q=${q(title, author)}`,
+          primary: false,
+        },
+        {
+          label: 'Graphic Audio',
+          emoji: '🎙️',
+          sublabel: 'Full-cast audio',
+          url: `https://www.graphicaudio.net/search?q=${q(title, author)}`,
+          primary: false,
+        },
+      ];
+    }
+
+    function renderBook(book, index) {
+      const stores = storeLinks(book.title, book.author, book.isbn);
+      const primary = stores.filter(s => s.primary);
+      const secondary = stores.filter(s => !s.primary);
+      const uid = `more-${index}`;
+
+      const coverHtml = book.cover
+        ? `<img class="book-cover" src="${escHtml(book.cover)}" alt="Cover of ${escHtml(book.title)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="book-cover-placeholder" style="display:none">📖</div>`
+        : `<div class="book-cover-placeholder">📖</div>`;
+
+      const primaryLinks = primary.map(s =>
+        `<a class="buy-btn" href="${escHtml(s.url)}" target="_blank" rel="noopener noreferrer">${s.emoji} ${escHtml(s.label)}</a>`
+      ).join('');
+
+      const secondaryLinks = secondary.map(s =>
+        `<a class="buy-btn secondary" href="${escHtml(s.url)}" target="_blank" rel="noopener noreferrer">${s.emoji} ${escHtml(s.label)}</a>`
+      ).join('');
+
+      return `
+        <li class="book-card">
+          ${coverHtml}
+          <div class="book-info">
+            <div class="book-title">${escHtml(book.title)}</div>
+            ${book.author ? `<div class="book-author">${escHtml(book.author)}</div>` : ''}
+            <div class="buy-section">
+              <div class="buy-primary">${primaryLinks}</div>
+              <button class="more-toggle" onclick="toggleMore('${uid}')" aria-expanded="false" aria-controls="${uid}">+ more stores</button>
+              <div class="more-stores" id="${uid}">${secondaryLinks}</div>
+            </div>
+          </div>
+        </li>
+      `;
+    }
+
+    function toggleMore(uid) {
+      const el = document.getElementById(uid);
+      const btn = el.previousElementSibling;
+      const open = el.classList.toggle('open');
+      btn.textContent = open ? '− fewer stores' : '+ more stores';
+      btn.setAttribute('aria-expanded', open);
+    }
+
+    function escHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function show(id) {
+      ['state-loading','state-error','state-empty','state-loaded'].forEach(s => {
+        document.getElementById(s).style.display = s === id ? '' : 'none';
+      });
+    }
+
+    async function load() {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('t');
+
+      if (!token) { show('state-error'); return; }
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_wishlist_by_token`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+          },
+          body: JSON.stringify({ p_token: token }),
+        });
+
+        if (!res.ok) { show('state-error'); return; }
+
+        const books = await res.json();
+
+        if (!books || books.length === 0) { show('state-empty'); return; }
+
+        document.getElementById('book-count').textContent =
+          `${books.length} ${books.length === 1 ? 'book' : 'books'}`;
+
+        document.getElementById('book-list').innerHTML =
+          books.map((b, i) => renderBook(b, i)).join('');
+
+        document.title = `BookHoard Wishlist · ${books.length} books`;
+
+        show('state-loaded');
+      } catch (e) {
+        show('state-error');
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>
