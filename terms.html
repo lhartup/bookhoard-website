@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service — BookHoard</title>
+  <meta name="description" content="BookHoard terms of service — the rules and rights that apply when you use the app." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #C4561A;
+      --cream:  #FDFAF3;
+      --dark:   #1C1410;
+      --muted:  #4A3728;
+      --card:   #FFF8EC;
+      --border: #E8DFC8;
+      --font:   system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: var(--font);
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a { color: var(--orange); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    a:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; border-radius: 3px; }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+    }
+    .nav-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+    .nav-logo:hover { text-decoration: none; opacity: 0.85; }
+    .nav-links { display: flex; gap: 0.25rem; list-style: none; }
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 0.75rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      border-radius: 6px;
+    }
+    .nav-links a:hover { color: var(--dark); background: var(--border); text-decoration: none; }
+
+    /* ── CONTENT ── */
+    main { flex: 1; padding: 3rem 1.5rem 5rem; }
+
+    .content {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--dark);
+      margin-bottom: 0.4rem;
+    }
+    .page-header .meta {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .page-header .meta strong { color: var(--dark); }
+
+    /* ── PROSE ── */
+    .prose { font-size: 1rem; color: var(--dark); }
+
+    .prose h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-top: 2.5rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+      padding-top: 0.25rem;
+    }
+
+    .prose h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-top: 1.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .prose p {
+      margin-bottom: 1rem;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+
+    .prose p:last-child { margin-bottom: 0; }
+
+    .prose ul, .prose ol {
+      margin: 0.5rem 0 1rem 1.4rem;
+      color: var(--muted);
+    }
+    .prose li {
+      margin-bottom: 0.4rem;
+      line-height: 1.65;
+    }
+
+    .prose a { color: var(--orange); }
+
+    /* Callout box */
+    .callout {
+      background: rgba(196, 86, 26, 0.07);
+      border-left: 3px solid var(--orange);
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .callout p {
+      font-size: 0.9rem;
+      color: var(--dark);
+      margin: 0;
+      line-height: 1.65;
+    }
+
+    /* Legal block (all-caps disclaimer) */
+    .legal-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.4rem;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    /* Section divider */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 1.5rem;
+    }
+    .footer-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .footer-links { display: flex; gap: 1.25rem; }
+    .footer-links a { color: var(--muted); }
+    .footer-links a:hover { color: var(--orange); text-decoration: none; }
+
+    @media (max-width: 480px) {
+      main { padding: 2rem 1.25rem 4rem; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="/" aria-label="BookHoard — home">BookHoard</a>
+      <ul class="nav-links" role="list">
+        <li><a href="/support.html">Support</a></li>
+        <li><a href="/privacy.html">Privacy</a></li>
+        <li><a href="/terms.html" aria-current="page">Terms</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <div class="content">
+      <header class="page-header">
+        <h1>Terms of Service</h1>
+        <p class="meta">
+          <strong>App:</strong> BookHoard &nbsp;&middot;&nbsp;
+          <strong>Effective:</strong> April 2026 &nbsp;&middot;&nbsp;
+          <strong>Contact:</strong> <a href="mailto:support@bookhoardapp.com">support@bookhoardapp.com</a>
+        </p>
+      </header>
+
+      <div class="prose">
+
+        <div class="callout">
+          <p><strong>Plain-language summary:</strong> BookHoard is a privacy-first book cataloging app. We don't sell your data, we don't show you ads, and your library is yours. These Terms govern how you use BookHoard and describe our respective rights and responsibilities. Please read them — they're written to be understood, not to bury you in legalese.</p>
+        </div>
+
+        <!-- 1 -->
+        <h2>1. Acceptance of Terms</h2>
+        <p>By downloading, installing, or using the BookHoard app ("App") or visiting bookhoardapp.com ("Website"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree, please do not use BookHoard.</p>
+        <p>These Terms apply to all users of BookHoard, including free ("Reader") plan users and paid ("Hoard+") subscribers. By creating an account, you confirm that you are at least 13 years of age and have the legal capacity to enter into this agreement.</p>
+        <p>If you are using BookHoard on behalf of an organization, you represent that you have authority to bind that organization to these Terms.</p>
+
+        <!-- 2 -->
+        <h2>2. Description of Service</h2>
+        <p><strong>BookHoard is a personal library management app that allows you to:</strong></p>
+        <ul>
+          <li>Catalog your personal book collection by scanning barcodes or photographing bookshelves</li>
+          <li>Track your reading, manage a To Be Read list, and log borrowed reads</li>
+          <li>Receive AI-powered book recommendations personalized to your taste</li>
+          <li>Find nearby independent bookstores and Little Free Libraries</li>
+          <li>Browse banned books data from publicly available sources</li>
+          <li>Manage a wishlist and track books you have loaned to others</li>
+        </ul>
+        <p>BookHoard is available as a free Reader plan and a paid Hoard+ subscription. Features available on each plan are described in the App and at bookhoardapp.com.</p>
+
+        <!-- 3 -->
+        <h2>3. Your Account</h2>
+
+        <h3>3.1 Registration</h3>
+        <p>To use BookHoard you must create an account using a valid email address. You are responsible for maintaining the confidentiality of your account credentials and for all activity that occurs under your account.</p>
+        <p>You agree to provide accurate, current, and complete information during registration and to update it as necessary. Accounts registered with false information may be suspended or terminated.</p>
+
+        <h3>3.2 Account security</h3>
+        <p>You are responsible for keeping your password secure. BookHoard will never ask for your password via email or any channel outside the official App. If you believe your account has been compromised, contact us immediately at <a href="mailto:support@bookhoardapp.com">support@bookhoardapp.com</a>.</p>
+
+        <h3>3.3 Account termination by you</h3>
+        <p>You may delete your account at any time from within the App via Profile &rarr; Account &rarr; Delete Account. Account deletion permanently removes your library data and account information from our systems. Deletion does not entitle you to a refund of any paid subscription fees.</p>
+
+        <h3>3.4 Suspension or termination by BookHoard</h3>
+        <p>We reserve the right to suspend or terminate accounts that violate these Terms, engage in fraudulent activity, or cause harm to other users or BookHoard's systems. We will provide notice where reasonably practicable unless immediate action is required to protect the service or its users.</p>
+
+        <!-- 4 -->
+        <h2>4. Hoard+ Subscription</h2>
+
+        <h3>4.1 Plans and pricing</h3>
+        <p>BookHoard offers a paid Hoard+ subscription that unlocks additional features including unlimited library storage, shelf scanning, AI recommendations, and Goodreads import. Current pricing is displayed in the App and at bookhoardapp.com. Prices are subject to change with reasonable notice.</p>
+
+        <h3>4.2 Free trial</h3>
+        <p>BookHoard may offer a free trial period for Hoard+. If you do not cancel before the trial period ends, you will be charged the applicable subscription fee. Only one free trial is available per user.</p>
+
+        <h3>4.3 Billing</h3>
+        <p>Subscriptions are billed through the Apple App Store or Google Play Store depending on where you downloaded the App. Your payment method will be charged at the beginning of each billing period (monthly or annual as selected). Billing is handled by Apple or Google — BookHoard does not store your payment information.</p>
+
+        <h3>4.4 Cancellation</h3>
+        <p>You may cancel your Hoard+ subscription at any time through your App Store or Play Store account settings. Cancellation takes effect at the end of the current billing period. You will retain access to Hoard+ features until the period ends. Cancellation does not entitle you to a refund for the current billing period.</p>
+        <p>To cancel on iOS: Settings &rarr; Apple ID &rarr; Subscriptions &rarr; BookHoard &rarr; Cancel Subscription.<br>
+        To cancel on Android: Play Store &rarr; Profile &rarr; Payments &amp; subscriptions &rarr; Subscriptions &rarr; BookHoard &rarr; Cancel.</p>
+
+        <h3>4.5 Refunds</h3>
+        <p>Refund requests for App Store purchases are handled by Apple. Refund requests for Play Store purchases are handled by Google. BookHoard does not process refunds directly. If you believe a charge was made in error, contact <a href="mailto:support@bookhoardapp.com">support@bookhoardapp.com</a> and we will assist where we are able.</p>
+
+        <h3>4.6 Changes to Hoard+</h3>
+        <p>We may modify the features included in Hoard+, or the pricing of Hoard+, at any time. We will provide reasonable advance notice of material changes. Continued use of Hoard+ after a price change takes effect constitutes acceptance of the new pricing.</p>
+
+        <!-- 5 -->
+        <h2>5. Free Plan Limits</h2>
+        <p>The free Reader plan allows you to catalog up to 50 books. If you reach the limit, you will be prompted to upgrade to Hoard+ or remove books from your library to add new ones. BookHoard reserves the right to adjust free plan limits with reasonable notice.</p>
+
+        <!-- 6 -->
+        <h2>6. Your Content</h2>
+
+        <h3>6.1 Ownership</h3>
+        <p>Your library data — books you have added, ratings you have given, notes you have written, lists you have created — belongs to you. BookHoard does not claim ownership of your personal library data.</p>
+
+        <h3>6.2 License to BookHoard</h3>
+        <p>By using BookHoard, you grant us a limited, non-exclusive license to store, process, and display your library data solely for the purpose of providing the BookHoard service to you. We do not use your library data for advertising, we do not sell it, and we do not share it with third parties beyond what is described in our <a href="/privacy.html">Privacy Policy</a>.</p>
+
+        <h3>6.3 Data export</h3>
+        <p>You may export your library data at any time from within the App. We are committed to ensuring you can take your data with you.</p>
+
+        <h3>6.4 Content you must not submit</h3>
+        <p>You agree not to submit content that is unlawful, harmful, abusive, harassing, defamatory, or that infringes the intellectual property rights of others. BookHoard is a personal library tool — it is not a publishing platform and does not support user-generated public content.</p>
+
+        <!-- 7 -->
+        <h2>7. Acceptable Use</h2>
+        <p>You agree to use BookHoard only for lawful purposes and in accordance with these Terms. You agree not to:</p>
+        <ul>
+          <li>Use BookHoard for any commercial purpose without our prior written consent</li>
+          <li>Attempt to reverse-engineer, decompile, or extract source code from the App</li>
+          <li>Use automated scripts, bots, or tools to access BookHoard or scrape its data</li>
+          <li>Attempt to gain unauthorized access to BookHoard's systems, other user accounts, or our infrastructure</li>
+          <li>Transmit malware, viruses, or any code intended to damage or disrupt BookHoard</li>
+          <li>Impersonate another person or entity or misrepresent your affiliation with any person or entity</li>
+          <li>Use BookHoard in any way that could damage, overburden, or impair our servers or networks</li>
+        </ul>
+        <p>Violation of these restrictions may result in immediate suspension or termination of your account.</p>
+
+        <!-- 8 -->
+        <h2>8. AI-Powered Features</h2>
+        <p>BookHoard uses artificial intelligence to power book recommendations and shelf scanning. These features are provided as-is and may not always be accurate. AI-generated recommendations are suggestions only — we do not guarantee their accuracy, completeness, or suitability for your preferences.</p>
+        <p>Shelf scanning uses AI to recognize book spines from photographs. Recognition accuracy varies depending on image quality, lighting, and spine legibility. You should review all identified books before adding them to your library.</p>
+        <p>BookHoard does not use your personal library data to train AI models. For details on how data is handled in connection with AI features, see our <a href="/privacy.html">Privacy Policy</a>.</p>
+
+        <!-- 9 -->
+        <h2>9. Third-Party Content and Links</h2>
+
+        <h3>9.1 Book metadata</h3>
+        <p>Book information displayed in BookHoard — titles, authors, cover images, descriptions, publisher information — is sourced from third-party databases including ISBNdb and Open Library. We make reasonable efforts to ensure accuracy but do not guarantee that all metadata is correct, complete, or current.</p>
+
+        <h3>9.2 Banned books data</h3>
+        <p>BookHoard's banned books feature uses publicly available data from PEN America's Index of School Book Bans. This data reflects reported bans at the time of our last update and may not reflect the current status of any particular book in any particular jurisdiction.</p>
+
+        <h3>9.3 Affiliate links</h3>
+        <p>BookHoard may display links to purchase books through third-party retailers including Amazon, Bookshop.org, ThriftBooks, eBay, and others. BookHoard participates in affiliate programs and may earn a commission if you make a purchase through these links. Affiliate links are disclosed as such within the App.</p>
+        <p>BookHoard's affiliate relationships do not influence which books we recommend. Our recommendations are generated based on your personal reading preferences only.</p>
+
+        <h3>9.4 Third-party websites</h3>
+        <p>BookHoard may contain links to third-party websites including bookstores, publishers, and library resources. We are not responsible for the content, privacy practices, or availability of third-party websites. Your use of third-party websites is subject to their own terms and privacy policies.</p>
+
+        <h3>9.5 NYT Bestseller lists</h3>
+        <p>Bestseller list data is provided by The New York Times. The New York Times name and trademarks are the property of The New York Times Company.</p>
+
+        <!-- 10 -->
+        <h2>10. Intellectual Property</h2>
+
+        <h3>10.1 BookHoard's IP</h3>
+        <p>BookHoard, its logo, the dragon mascot, the BookHoard name, and all App content, features, and functionality are owned by BookHoard and are protected by intellectual property laws. You may not copy, modify, distribute, sell, or create derivative works from BookHoard's intellectual property without our prior written consent.</p>
+
+        <h3>10.2 Feedback</h3>
+        <p>If you provide us with feedback, suggestions, or ideas about BookHoard, you grant us a perpetual, irrevocable, royalty-free license to use that feedback for any purpose, including incorporating it into the App, without any obligation to compensate you.</p>
+
+        <h3>10.3 Open source</h3>
+        <p>BookHoard may incorporate open-source software. Any applicable open-source licenses are acknowledged where required.</p>
+
+        <!-- 11 -->
+        <h2>11. Privacy</h2>
+        <p>Your use of BookHoard is subject to our <a href="/privacy.html">Privacy Policy</a>, which is incorporated into these Terms by reference. Our Privacy Policy explains what data we collect, how we use it, and your rights in relation to it. BookHoard's foundational privacy commitment is simple: we do not sell your data, we do not use your data for advertising, and your reading life is yours.</p>
+
+        <!-- 12 -->
+        <h2>12. Disclaimers</h2>
+        <div class="legal-block">
+          <p>BOOKHOARD IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, BOOKHOARD DISCLAIMS ALL WARRANTIES INCLUDING IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.</p>
+        </div>
+        <p>We do not warrant that the App will be uninterrupted, error-free, or free of viruses or other harmful components. We do not warrant the accuracy or completeness of any book metadata, recommendation, banned books data, or bookstore location information.</p>
+        <p>Some jurisdictions do not allow the exclusion of certain warranties. In such jurisdictions, the above exclusions apply only to the extent permitted by law.</p>
+
+        <!-- 13 -->
+        <h2>13. Limitation of Liability</h2>
+        <div class="legal-block">
+          <p>TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL BOOKHOARD, ITS OWNERS, OFFICERS, OR EMPLOYEES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM YOUR USE OF OR INABILITY TO USE THE APP, INCLUDING BUT NOT LIMITED TO LOSS OF DATA, LOSS OF PROFITS, OR BUSINESS INTERRUPTION, EVEN IF BOOKHOARD HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.</p>
+          <br>
+          <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, BOOKHOARD'S TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING FROM OR RELATED TO THESE TERMS OR YOUR USE OF THE APP SHALL NOT EXCEED THE GREATER OF (A) THE AMOUNT YOU PAID BOOKHOARD IN THE TWELVE MONTHS PRECEDING THE CLAIM, OR (B) $100.</p>
+        </div>
+        <p>Some jurisdictions do not allow the limitation of certain liabilities. In such jurisdictions, the above limitations apply only to the extent permitted by law.</p>
+
+        <!-- 14 -->
+        <h2>14. Indemnification</h2>
+        <p>You agree to indemnify, defend, and hold harmless BookHoard and its owners, officers, and employees from and against any claims, liabilities, damages, losses, and expenses (including reasonable legal fees) arising from your violation of these Terms, your use of the App in a manner not authorized by these Terms, or your violation of any third-party rights.</p>
+
+        <!-- 15 -->
+        <h2>15. Governing Law and Disputes</h2>
+        <p>These Terms are governed by the laws of the State of Mississippi, United States, without regard to its conflict of law principles.</p>
+        <p>Any dispute arising from or relating to these Terms or your use of BookHoard shall first be attempted to be resolved through good-faith negotiation. If resolution cannot be reached informally, disputes shall be resolved through binding arbitration conducted by a mutually agreed arbitration provider, except that either party may seek injunctive relief in a court of competent jurisdiction for matters involving intellectual property or confidential information.</p>
+        <p>You agree to resolve disputes with BookHoard on an individual basis and not as part of any class, consolidated, or representative action.</p>
+        <p>Notwithstanding the above, if you are a consumer located in a jurisdiction that does not permit mandatory arbitration, you may bring claims in courts of competent jurisdiction in your place of residence.</p>
+
+        <!-- 16 -->
+        <h2>16. App Store Terms</h2>
+        <p>If you download BookHoard from the Apple App Store, Apple is not a party to these Terms and is not responsible for the App or its content. Apple has no obligation to provide any maintenance or support services for BookHoard.</p>
+        <p>If you download BookHoard from the Google Play Store, Google is not a party to these Terms and is not responsible for the App or its content.</p>
+        <p>Your use of BookHoard is subject to the usage rules set forth in the applicable App Store's Terms of Service.</p>
+
+        <!-- 17 -->
+        <h2>17. Changes to These Terms</h2>
+        <p>We may update these Terms from time to time. If we make material changes, we will update the effective date at the top of this page and notify you within the App or by email. Your continued use of BookHoard after changes take effect constitutes acceptance of the updated Terms.</p>
+        <p>If you do not agree with updated Terms, you may delete your account and discontinue use of the App.</p>
+
+        <!-- 18 -->
+        <h2>18. General Provisions</h2>
+
+        <h3>18.1 Entire agreement</h3>
+        <p>These Terms, together with our <a href="/privacy.html">Privacy Policy</a>, constitute the entire agreement between you and BookHoard regarding your use of the App and supersede all prior agreements and understandings.</p>
+
+        <h3>18.2 Severability</h3>
+        <p>If any provision of these Terms is found to be unenforceable, the remaining provisions will continue in full force and effect.</p>
+
+        <h3>18.3 Waiver</h3>
+        <p>Our failure to enforce any right or provision of these Terms shall not constitute a waiver of that right or provision.</p>
+
+        <h3>18.4 Assignment</h3>
+        <p>You may not assign your rights or obligations under these Terms without our prior written consent. BookHoard may assign these Terms in connection with a merger, acquisition, or sale of assets, with notice to you.</p>
+
+        <h3>18.5 No third-party beneficiaries</h3>
+        <p>These Terms do not create any third-party beneficiary rights except as expressly stated.</p>
+
+        <h3>18.6 Force majeure</h3>
+        <p>BookHoard shall not be liable for any failure or delay in performance resulting from causes beyond our reasonable control, including natural disasters, internet outages, or actions of third-party service providers.</p>
+
+        <!-- 19 -->
+        <h2>19. Contact</h2>
+        <p>Questions about these Terms, requests for clarification, or legal notices should be sent to:</p>
+        <p><strong>BookHoard</strong><br>
+        Email: <a href="mailto:support@bookhoardapp.com">support@bookhoardapp.com</a><br>
+        Website: <a href="https://bookhoardapp.com">bookhoardapp.com</a></p>
+        <p>We aim to respond to all legal inquiries within 5 business days.</p>
+
+        <hr class="section-divider" />
+
+      </div><!-- .prose -->
+    </div><!-- .content -->
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>&copy; 2026 BookHoard</span>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/support.html">Support</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+      </nav>
+    </div>
+  </footer>
+
+</body>
+</html>
