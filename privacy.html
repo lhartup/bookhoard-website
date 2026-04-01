@@ -223,7 +223,7 @@
         <h1>Privacy Policy</h1>
         <p class="meta">
           <strong>App:</strong> BookHoard &nbsp;&middot;&nbsp;
-          <strong>Effective:</strong> March 2026 &nbsp;&middot;&nbsp;
+          <strong>Effective:</strong> April 2026 &nbsp;&middot;&nbsp;
           <strong>Contact:</strong> <a href="mailto:support@bookhoardapp.com">support@bookhoardapp.com</a>
         </p>
       </header>
@@ -236,7 +236,7 @@
 
         <!-- 1 -->
         <h2>1. Who we are</h2>
-        <p>BookHoard is a personal library app available on Android and iOS. This policy explains what data we collect, why we collect it, and how it is used and protected.</p>
+        <p>BookHoard (bundle ID: <code>com.lhartup.bookhoard</code>) is a personal library app. This policy explains what data we collect, why we collect it, and how it is used and protected.</p>
         <p>If you have questions or requests about your data, contact us at <a href="mailto:support@bookhoardapp.com">support@bookhoardapp.com</a>.</p>
 
         <!-- 2 -->
@@ -246,7 +246,7 @@
         <p>When you create a BookHoard account, we collect your <strong>email address</strong>. This is used solely to authenticate your account, send you password-reset emails, and deliver essential transactional messages. We do not use your email address for marketing.</p>
 
         <h3>Library data</h3>
-        <p>BookHoard stores the <strong>library data</strong> you choose to add: book titles, authors, ratings, personal notes, tags, reading format (physical, digital, or audiobook), and location tags. This data is synced to a secure cloud database so you can access your library across devices. It is never shared with third parties, never used for advertising, and never sold.</p>
+        <p>BookHoard stores the <strong>library data</strong> you choose to add: book titles, authors, ratings, personal notes, tags, reading format (physical, digital, audiobook, or borrowed), location tags, and — for borrowed books — an optional due-back date. This data is synced to a secure cloud database so you can access your library across devices. It is never shared with third parties, never used for advertising, and never sold.</p>
 
         <h3>Genre preferences</h3>
         <p>During onboarding, you may select genre preferences. These preferences are stored with your account and used only to improve your in-app recommendations.</p>
@@ -300,23 +300,28 @@
         </div>
 
         <div class="vendor-card">
-          <h3>Google Books API — Book Metadata</h3>
-          <p>When you scan a barcode or search for a title, BookHoard queries the Google Books API to look up book details (title, author, cover image, description). Only the ISBN or search term is sent — no personal data, no account information, no library contents. &rarr; <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></p>
+          <h3>ISBNdb — Book Metadata</h3>
+          <p>BookHoard uses ISBNdb to look up book metadata (title, author, publisher, cover image, description, and subject classification) in three situations: when you scan a barcode, when you use "Look up missing details", and automatically in the background the first time you open a book's detail page. ISBNdb receives the book's ISBN or title — no account information or personal data is sent. Each book is looked up at most once; results are stored in your library permanently. &rarr; <a href="https://isbndb.com/privacy-policy" target="_blank" rel="noopener">isbndb.com/privacy-policy</a></p>
         </div>
 
         <div class="vendor-card">
-          <h3>New York Times Books API — Bestseller Lists</h3>
-          <p>The Discover section displays NYT Bestseller lists sourced from the New York Times Books API. No personal data is sent to the NYT API — requests contain only the list name being fetched. &rarr; <a href="https://developer.nytimes.com/faq" target="_blank" rel="noopener">developer.nytimes.com</a></p>
+          <h3>Open Library — Book Search, Covers &amp; Metadata</h3>
+          <p>BookHoard uses Open Library (a project of the Internet Archive) for real-time book search, cover images, and as a metadata fallback when ISBNdb does not have complete information for a book. Open Library also provides cover images for the Banned Books list. Open Library receives book titles, author names, and ISBNs — no account information or personal data is sent. Open Library data is available under a Creative Commons license. &rarr; <a href="https://openlibrary.org/about" target="_blank" rel="noopener">openlibrary.org/about</a></p>
+        </div>
+
+        <div class="vendor-card">
+          <h3>Library of Congress — Book Metadata (fallback)</h3>
+          <p>For books where neither ISBNdb nor Open Library has complete metadata — particularly older or out-of-print titles — BookHoard queries the Library of Congress catalogue as a last resort to fill in missing details such as description, publisher, or publication year. The Library of Congress receives book titles and author names. No cover images are retrieved from this source, and no account information or personal data is sent. &rarr; <a href="https://www.loc.gov/legal/" target="_blank" rel="noopener">loc.gov/legal</a></p>
         </div>
 
         <div class="vendor-card">
           <h3>OpenStreetMap / Overpass API — Little Free Libraries</h3>
-          <p>The Nearby tab uses the OpenStreetMap Overpass API to find Little Free Libraries near you. Your approximate location coordinates are sent to perform the search. No personal data or account information is transmitted. Map data is &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, available under the Open Database Licence.</p>
+          <p>When you use the "Find nearby" feature, your approximate location coordinates are sent to the Overpass API (a service that queries OpenStreetMap data) to find Little Free Libraries near you. The same location data is also sent to Google Places API (see above) for bookstores and libraries. Location data is not stored by BookHoard after the query completes. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, available under the Open Database Licence. &rarr; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">openstreetmap.org/copyright</a></p>
         </div>
 
         <div class="vendor-card">
-          <h3>PEN America — Banned Books Data</h3>
-          <p>BookHoard's banned books feature uses publicly available data from PEN America's Index of School Book Bans. This data is downloaded to our servers periodically and is not a live API call from your device. No user data is sent to or received from PEN America. &rarr; <a href="https://pen.org/book-bans/" target="_blank" rel="noopener">pen.org/book-bans</a></p>
+          <h3>The New York Times Books API — Bestseller Lists</h3>
+          <p>BookHoard displays NYT Bestseller Lists in the Discover tab. To load these lists, requests are sent to the NYT Books API — no personal data or account information is included in these requests. Bestseller data is provided by The New York Times. &rarr; <a href="https://developer.nytimes.com/docs/books-product/1/overview" target="_blank" rel="noopener">developer.nytimes.com</a></p>
         </div>
 
         <hr class="section-divider" />
