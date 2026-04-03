@@ -97,6 +97,14 @@
     }
 
     /* ── BOOK LIST ── */
+    .affiliate-disclosure {
+      text-align: center;
+      font-size: 12px;
+      color: #8B7355;
+      padding: 8px 24px 4px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
     .book-list {
       max-width: 680px;
       margin: 0 auto;
@@ -303,6 +311,7 @@
         </div>
       </div>
 
+      <p class="affiliate-disclosure">Some links on this page are affiliate links. BookHoard may earn a small commission at no extra cost to you.</p>
       <ul class="book-list" id="book-list" role="list"></ul>
     </div>
   </main>
@@ -333,6 +342,9 @@
       return isbn && isbn.length === 13 ? isbn : null;
     }
 
+    const BOOKSHOP_AID = '122750';
+    const AMAZON_TAG = 'bookhoardapp-20';
+
     function storeLinks(title, author, isbn) {
       const i = isbn || '';
       const i13 = isbn13(isbn);
@@ -341,14 +353,14 @@
           label: 'Bookshop.org',
           emoji: '📚',
           sublabel: 'Supports indie bookstores',
-          url: i ? `https://bookshop.org/isbn/${i}` : `https://bookshop.org/search?keywords=${q(title, author)}`,
+          url: i ? `https://bookshop.org/a/${BOOKSHOP_AID}/${i}` : `https://bookshop.org/search?keywords=${q(title, author)}&aff_id=${BOOKSHOP_AID}`,
           primary: true,
         },
         {
           label: 'Amazon',
           emoji: '🛒',
           sublabel: 'New, used & marketplace',
-          url: i ? `https://www.amazon.com/s?k=${i}&i=stripbooks` : `https://www.amazon.com/s?k=${q(title, author)}&i=stripbooks`,
+          url: i ? `https://www.amazon.com/s?k=${i}&i=stripbooks&tag=${AMAZON_TAG}` : `https://www.amazon.com/s?k=${q(title, author)}&i=stripbooks&tag=${AMAZON_TAG}`,
           primary: true,
         },
         {
@@ -383,7 +395,7 @@
           label: 'Audible',
           emoji: '🎧',
           sublabel: 'Audiobook',
-          url: `https://www.audible.com/search?keywords=${q(title, author)}`,
+          url: `https://www.audible.com/search?keywords=${q(title, author)}&tag=${AMAZON_TAG}`,
           primary: false,
         },
         {
