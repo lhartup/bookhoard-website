@@ -344,6 +344,7 @@
 
     const BOOKSHOP_AID = '122750';
     const AMAZON_TAG = 'bookhoardapp-20';
+    const EBAY_CAMPID = '5339147073';
 
     function storeLinks(title, author, isbn) {
       const i = isbn || '';
@@ -381,7 +382,7 @@
           label: 'eBay',
           emoji: '🛍️',
           sublabel: 'New, used & collectible',
-          url: i ? `https://www.ebay.com/sch/i.html?_nkw=${i}&_sacat=267` : `https://www.ebay.com/sch/i.html?_nkw=${q(title, author)}&_sacat=267`,
+          url: (() => { const s = i ? `https://www.ebay.com/sch/i.html?_nkw=${i}&_sacat=267` : `https://www.ebay.com/sch/i.html?_nkw=${q(title, author)}&_sacat=267`; return `https://rover.ebay.com/rover/1/711-53200-19255-0/1?mpre=${encodeURIComponent(s)}&campid=${EBAY_CAMPID}&toolid=10001&mkevt=1&mkcid=1`; })(),
           primary: false,
         },
         {
