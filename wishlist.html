@@ -375,7 +375,7 @@
           label: 'eBay',
           emoji: '🛍️',
           sublabel: 'New, used & collectible',
-          url: (() => { const s = i ? `https://www.ebay.com/sch/i.html?_nkw=${i}&_sacat=267` : `https://www.ebay.com/sch/i.html?_nkw=${q(title, author)}&_sacat=267`; return `https://rover.ebay.com/rover/1/711-53200-19255-0/1?mpre=${encodeURIComponent(s)}&campid=${EBAY_CAMPID}&toolid=10001&mkevt=1&mkcid=1`; })(),
+          url: i ? `https://www.ebay.com/sch/i.html?_nkw=${i}&_sacat=267&mkevt=1&mkcid=1&mkrid=711-53200-19255-0&campid=${EBAY_CAMPID}&toolid=10001` : `https://www.ebay.com/sch/i.html?_nkw=${q(title, author)}&_sacat=267&mkevt=1&mkcid=1&mkrid=711-53200-19255-0&campid=${EBAY_CAMPID}&toolid=10001`,
           primary: false,
         },
         {
