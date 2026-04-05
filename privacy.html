@@ -253,7 +253,9 @@
         <p>During onboarding, you may select genre preferences. These preferences are stored with your account and used only to improve your in-app recommendations.</p>
 
         <h3>Camera</h3>
-        <p>BookHoard uses your device camera for two purposes: scanning ISBN barcodes and scanning bookshelf photos. <strong>Images captured during these scans are never stored on our servers and are never transmitted beyond the scanning process.</strong> Shelf photos are processed on-device or passed directly to our AI provider (see Section 3) for recognition and are immediately discarded.</p>
+        <p>BookHoard uses your device camera for three purposes: scanning ISBN barcodes, reading ISBN text via OCR (optical character recognition), and scanning bookshelf photos. <strong>Images captured during these scans are never stored on our servers.</strong></p>
+        <p>ISBN text recognition is performed entirely on your device using built-in platform technology (Apple Vision on iOS, Google ML Kit on Android). <strong>These images are never transmitted to Apple, Google, or our servers</strong> — only the extracted ISBN text is used to look up book information.</p>
+        <p>Shelf photos are passed directly to our AI provider (see Section 3) for recognition and are immediately discarded.</p>
 
         <h3>Approximate location</h3>
         <p>The bookstore finder feature uses your device's approximate location to show nearby independent bookstores. Location access is requested only when you use this feature. <strong>Your location is never stored and never shared</strong> — it is used in real time to query a map service, then discarded.</p>
@@ -298,6 +300,11 @@
         <div class="vendor-card">
           <h3>RevenueCat — Subscription Management</h3>
           <p>We use RevenueCat to manage subscriptions. RevenueCat may collect purchase history solely for receipt validation and subscription management. This data is not used for advertising and is not sold. &rarr; <a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener">revenuecat.com/privacy</a></p>
+        </div>
+
+        <div class="vendor-card">
+          <h3>Apple Vision &amp; Google ML Kit — On-Device Text Recognition</h3>
+          <p>BookHoard uses built-in platform OCR technology to read ISBN text from book covers: Apple Vision Framework on iOS and Google ML Kit on Android. <strong>All text recognition happens entirely on your device.</strong> No images or extracted text are sent to Apple or Google — the processing is local and offline-capable. Only the ISBN number identified by the OCR is used by BookHoard to look up book information.</p>
         </div>
 
         <div class="vendor-card">
