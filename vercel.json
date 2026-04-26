@@ -5,5 +5,13 @@
     { "source": "/support",  "destination": "/support.html"  },
     { "source": "/wishlist", "destination": "/wishlist.html" },
     { "source": "/admin",    "destination": "/admin.html"    }
+  ],
+  "headers": [
+    {
+      "source": "/(admin|admin.html)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive, nosnippet" }
+      ]
+    }
   ]
 }
