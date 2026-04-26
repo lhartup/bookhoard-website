@@ -199,6 +199,7 @@
     }
 
     .row-actions { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+    .grant-pair { display: inline-flex; gap: 0.35rem; align-items: center; }
     .row-btn {
       background: white;
       border: 1px solid var(--border);
@@ -427,6 +428,7 @@
         h('th', {}, 'Books'),
         h('th', {}, 'Last book'),
         h('th', {}, 'Top genres'),
+        h('th', {}, 'Plan'),
         h('th', {}, 'Actions'),
       )));
       const tbody = h('tbody');
@@ -442,6 +444,7 @@
           h('td', {}, fmtNum(u.book_count)),
           h('td', {}, fmtRelDate(u.last_book_added)),
           h('td', {}, u.top_genres.join(', ') || '—'),
+          h('td', {}, planBadge(u)),
           h('td', {}, userActions(u)),
         ));
       }
@@ -758,6 +761,22 @@
     }
   }
 
+  function planBadge(user) {
+    const s = user.subscription_status;
+    if (s === 'hoard_plus') {
+      const expires = user.subscription_expires_at
+        ? `until ${new Date(user.subscription_expires_at).toLocaleDateString()}`
+        : 'lifetime';
+      return h('div', {},
+        h('span', { class: 'badge badge-success' }, 'Hoard+'),
+        h('div', { class: 'empty', style: 'font-size: 0.72rem; margin-top: 0.2rem;' }, expires),
+      );
+    }
+    if (s === 'free') return h('span', { class: 'badge badge-muted' }, 'free');
+    if (s === 'not_configured') return h('span', { class: 'empty' }, '—');
+    return h('span', { class: 'badge badge-muted' }, 'unknown');
+  }
+
   function userActions(user) {
     const status = h('div', { class: 'row-status' }, '');
     const setStatus = (msg, kind) => {
@@ -801,7 +820,10 @@
       }
     }}, 'Grant Hoard+');
 
-    return h('div', { class: 'row-actions' }, resetBtn, durationSel, grantBtn, status);
+    // Pair the duration dropdown with Grant Hoard+ so flex-wrap can't separate them.
+    const grantPair = h('div', { class: 'grant-pair' }, durationSel, grantBtn);
+
+    return h('div', { class: 'row-actions' }, resetBtn, grantPair, status);
   }
 
   // ── small helpers ─────────────────────────────────────────────────────────
