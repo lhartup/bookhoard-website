@@ -465,26 +465,25 @@
       panel.append(notConfiguredCard('RevenueCat', data.reason));
       return;
     }
+    if (data.status === 'error') {
+      panel.append(h('div', { class: 'card' }, h('h3', {}, 'RevenueCat'), h('div', { class: 'err' }, data.reason)));
+      return;
+    }
     panel.append(
       h('div', { class: 'card' },
         h('h3', {}, 'Subscriptions'),
         h('div', { class: 'stat-grid' },
-          stat('MRR', data.mrr ?? '—'),
-          stat('Active subscribers', data.activeSubscribers ?? '—'),
-          stat('Churn rate', data.churnRate ?? '—'),
-          stat('Trial conversions', data.trialConversions ?? '—'),
+          stat('Active Hoard+', fmtNum(data.activeHoardPlus)),
+          stat('Any active', fmtNum(data.anyActiveSubscribers)),
+          stat('Lifetime grants', fmtNum(data.lifetimeGrants)),
+          stat('Total customers', fmtNum(data.totalCustomers)),
+          stat('Est. MRR', data.estimatedMrrUsd != null ? `$${data.estimatedMrrUsd.toFixed(2)}` : '—',
+            data.avgPriceUsd ? `× $${data.avgPriceUsd}` : 'set REVENUECAT_AVG_PRICE_USD'),
         ),
-        data.reason ? h('p', { class: 'empty' }, data.reason) : null,
+        h('p', { class: 'empty' }, data.mrrNote),
+        data.truncated ? h('p', { class: 'err' }, `Truncated at ${data.pagesScanned} pages — increase MAX_PAGES if needed.`) : null,
+        h('p', {}, h('a', { href: data.dashboardUrl, target: '_blank' }, 'Open RevenueCat dashboard for MRR / churn →')),
       ),
-      data.sample
-        ? h('div', { class: 'card' },
-            h('h3', {}, 'Live customer sample'),
-            h('div', { class: 'stat-grid' },
-              stat('Customers in page', data.sample.customersInPage),
-              stat('Active in page',   data.sample.activeSubscribersInPage),
-            ),
-          )
-        : null,
     );
   }
 
@@ -510,20 +509,14 @@
     }
     panel.append(sbCard);
 
-    // Bandwidth
+    // Bandwidth — platform limit, link to dashboard
     const bw = sb.bandwidth;
-    const bwCard = h('div', { class: 'card' }, h('h3', {}, 'Bandwidth / egress'));
-    if (bw.status === 'see_dashboard') {
-      bwCard.append(
-        h('p', {}, 'Open in dashboard: ', h('a', { href: bw.dashboardUrl, target: '_blank' }, bw.dashboardUrl)),
-        h('p', { class: 'empty' }, bw.reason),
-      );
-    } else if (bw.status === 'not_configured') {
-      bwCard.append(h('p', {}, h('span', { class: 'badge badge-pending' }, 'not configured')), h('p', { class: 'empty' }, bw.reason));
-    } else {
-      bwCard.append(h('p', { class: 'empty' }, bw.reason ?? bw.status));
-    }
-    panel.append(bwCard);
+    panel.append(h('div', { class: 'card' },
+      h('h3', {}, 'Bandwidth / egress'),
+      h('p', {}, h('span', { class: 'badge badge-muted' }, 'platform limit')),
+      h('p', { class: 'empty' }, bw.reason),
+      h('p', {}, h('a', { href: bw.dashboardUrl, target: '_blank' }, 'Open in Supabase dashboard →')),
+    ));
 
     // Edge functions
     const ef = sb.edgeFunctions;
@@ -560,7 +553,31 @@
     panel.append(efCard);
 
     // Anthropic
-    panel.append(statusCard('Anthropic', data.anthropic));
+    const an = data.anthropic;
+    const anCard = h('div', { class: 'card' }, h('h3', {}, 'Anthropic spend (this month)'));
+    if (an.status === 'ok') {
+      anCard.append(h('div', { class: 'stat-grid' },
+        stat('Month-to-date', `$${an.monthToDateUsd.toFixed(2)}`),
+        stat('Monthly cap', an.monthlyCapUsd != null ? `$${an.monthlyCapUsd.toFixed(2)}` : 'set ANTHROPIC_MONTHLY_CAP_USD'),
+        stat('% of cap', an.pctOfCap != null ? fmtPct(an.pctOfCap) : '—'),
+      ));
+      if (an.dailySeries?.length) {
+        const tbl = h('table', {});
+        tbl.append(h('thead', {}, h('tr', {}, h('th', {}, 'Day'), h('th', {}, 'Spend (USD)'))));
+        const tbody = h('tbody');
+        for (const d of an.dailySeries) {
+          tbody.append(h('tr', {}, h('td', {}, d.day), h('td', {}, `$${d.amount.toFixed(2)}`)));
+        }
+        tbl.append(tbody);
+        anCard.append(tbl);
+      }
+    } else if (an.status === 'not_configured') {
+      anCard.append(h('p', {}, h('span', { class: 'badge badge-pending' }, 'not configured')), h('p', { class: 'empty' }, an.reason));
+    } else {
+      anCard.append(h('div', { class: 'err' }, an.reason ?? an.status));
+    }
+    panel.append(anCard);
+
     // ISBNdb
     const isb = data.isbndb;
     panel.append(h('div', { class: 'card' },
@@ -571,8 +588,42 @@
       ),
       h('p', { class: 'empty' }, isb.reason),
     ));
-    // R2
-    panel.append(statusCard('Cloudflare R2 backups', data.r2));
+
+    // R2 backups
+    const r2 = data.r2;
+    const r2Card = h('div', { class: 'card' }, h('h3', {}, 'Cloudflare R2 backups'));
+    if (r2.status === 'ok') {
+      r2Card.append(h('div', { class: 'stat-grid' },
+        stat('Bucket', r2.bucket),
+        stat('Backups', fmtNum(r2.backupCount)),
+        stat('Total size', fmtBytes(r2.totalSizeBytes)),
+        stat('Last backup', fmtRelDate(r2.lastBackupAt)),
+        stat('Last size', r2.lastBackupSizeBytes != null ? fmtBytes(r2.lastBackupSizeBytes) : '—'),
+      ));
+      if (r2.recent?.length) {
+        const tbl = h('table', {});
+        tbl.append(h('thead', {}, h('tr', {},
+          h('th', {}, 'Key'),
+          h('th', {}, 'Size'),
+          h('th', {}, 'Modified'),
+        )));
+        const tbody = h('tbody');
+        for (const o of r2.recent) {
+          tbody.append(h('tr', {},
+            h('td', { class: 'mono' }, o.key),
+            h('td', {}, fmtBytes(o.sizeBytes)),
+            h('td', {}, fmtRelDate(o.lastModified)),
+          ));
+        }
+        tbl.append(tbody);
+        r2Card.append(tbl);
+      }
+    } else if (r2.status === 'not_configured') {
+      r2Card.append(h('p', {}, h('span', { class: 'badge badge-pending' }, 'not configured')), h('p', { class: 'empty' }, r2.reason));
+    } else {
+      r2Card.append(h('div', { class: 'err' }, r2.reason ?? r2.status));
+    }
+    panel.append(r2Card);
   }
 
   async function renderJobs(panel) {
