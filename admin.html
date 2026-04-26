@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BookHoard — Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #C4561A;
+      --cream:  #FDFAF3;
+      --dark:   #1C1410;
+      --muted:  #4A3728;
+      --card:   #FFF8EC;
+      --border: #E8DFC8;
+      --green:  #2F7D32;
+      --red:    #B23A3A;
+      --amber:  #B97A1A;
+      --font:   system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --mono:   ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    html { font-size: 15px; }
+    body {
+      font-family: var(--font);
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    a { color: var(--orange); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    header h1 {
+      font-size: 1.05rem;
+      color: var(--orange);
+      font-weight: 700;
+    }
+    .who { font-size: 0.85rem; color: var(--muted); display: flex; gap: 1rem; align-items: center; }
+    .who button {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font: inherit;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .who button:hover { background: var(--border); }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+
+    /* ── LOGIN ── */
+    .login-wrap {
+      max-width: 380px;
+      margin: 6rem auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2rem;
+    }
+    .login-wrap h2 { margin-bottom: 1rem; font-size: 1.2rem; }
+    .login-wrap p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .login-wrap label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.25rem; margin-top: 0.75rem; }
+    .login-wrap input {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font: inherit;
+      background: white;
+    }
+    .login-wrap input:focus { outline: 2px solid var(--orange); outline-offset: 1px; }
+    .login-wrap button {
+      width: 100%;
+      margin-top: 1.25rem;
+      padding: 0.7rem;
+      background: var(--orange);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .login-wrap button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .login-error { color: var(--red); font-size: 0.85rem; margin-top: 0.75rem; min-height: 1.2em; }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .tabs button {
+      background: transparent;
+      border: none;
+      padding: 0.7rem 1rem;
+      font: inherit;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .tabs button:hover { color: var(--dark); }
+    .tabs button.active {
+      color: var(--orange);
+      border-bottom-color: var(--orange);
+      font-weight: 600;
+    }
+
+    /* ── PANELS ── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+    .stat .label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .stat .value { font-size: 1.4rem; font-weight: 700; margin-top: 0.15rem; }
+    .stat .sub { font-size: 0.75rem; color: var(--muted); }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.6rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    th { font-weight: 600; color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    tr:last-child td { border-bottom: none; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-success { background: #E0F0E2; color: var(--green); }
+    .badge-fail    { background: #F5DEDE; color: var(--red); }
+    .badge-pending { background: #FBEBD0; color: var(--amber); }
+    .badge-muted   { background: var(--border); color: var(--muted); }
+
+    .empty { color: var(--muted); font-size: 0.9rem; padding: 0.75rem 0; }
+    .loading { color: var(--muted); font-size: 0.9rem; padding: 1rem 0; }
+    .err { color: var(--red); font-size: 0.85rem; padding: 0.75rem 0; }
+    .mono { font-family: var(--mono); font-size: 0.82rem; }
+
+    .search-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .search-row input {
+      flex: 1;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font: inherit;
+      background: white;
+    }
+    .search-row button {
+      padding: 0.55rem 1rem;
+      background: var(--orange);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font: inherit;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<!-- Supabase JS via CDN (public anon key, safe to embed) -->
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const SUPABASE_URL = 'https://piahhiaadhdprbslddky.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpYWhoaWFhZGhkcHJic2xkZGt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NjM3MDEsImV4cCI6MjA4OTUzOTcwMX0.vHvTQmMV9uwtXR7kWJeSNG8ZjpoAnK0Dq0WKd7Y56uA';
+  const BACKEND_URL = 'https://hoard-dev-production.up.railway.app';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const app = document.getElementById('app');
+
+  // ── helpers ────────────────────────────────────────────────────────────────
+  const h = (tag, attrs = {}, ...children) => {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === 'class') el.className = v;
+      else if (k === 'html') el.innerHTML = v;
+      else if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
+      else el.setAttribute(k, v);
+    }
+    for (const c of children.flat()) {
+      if (c == null || c === false) continue;
+      el.append(c instanceof Node ? c : document.createTextNode(String(c)));
+    }
+    return el;
+  };
+
+  const fmtBytes = (n) => {
+    if (n == null) return '—';
+    if (n < 1024) return `${n} B`;
+    if (n < 1024 ** 2) return `${(n / 1024).toFixed(1)} KB`;
+    if (n < 1024 ** 3) return `${(n / 1024 ** 2).toFixed(1)} MB`;
+    return `${(n / 1024 ** 3).toFixed(2)} GB`;
+  };
+  const fmtNum = (n) => n == null ? '—' : Number(n).toLocaleString();
+  const fmtPct = (n) => n == null ? '—' : `${(n * 100).toFixed(1)}%`;
+  const fmtDate = (s) => {
+    if (!s) return '—';
+    const d = new Date(s);
+    if (isNaN(d)) return s;
+    return d.toLocaleString();
+  };
+  const fmtRelDate = (s) => {
+    if (!s) return '—';
+    const ms = Date.now() - new Date(s).getTime();
+    const min = Math.floor(ms / 60000);
+    if (min < 1) return 'just now';
+    if (min < 60) return `${min}m ago`;
+    const hr = Math.floor(min / 60);
+    if (hr < 24) return `${hr}h ago`;
+    const d = Math.floor(hr / 24);
+    return `${d}d ago`;
+  };
+
+  async function adminFetch(path) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error('Not authenticated');
+    const res = await fetch(`${BACKEND_URL}/api/admin${path}`, {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
+    if (res.status === 403) throw new Error('Your account is not in the admin allowlist.');
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`${res.status}: ${body.slice(0, 300)}`);
+    }
+    return res.json();
+  }
+
+  // ── login ─────────────────────────────────────────────────────────────────
+  function renderLogin(error = '') {
+    app.innerHTML = '';
+    const wrap = h('div', { class: 'login-wrap' });
+    const errEl = h('div', { class: 'login-error' }, error);
+    const emailIn = h('input', { type: 'email', autocomplete: 'email', required: 'true' });
+    const pwIn = h('input', { type: 'password', autocomplete: 'current-password', required: 'true' });
+    const btn = h('button', { type: 'submit' }, 'Sign in');
+
+    const form = h('form', {
+      onsubmit: async (e) => {
+        e.preventDefault();
+        btn.disabled = true;
+        errEl.textContent = '';
+        const { error } = await supabase.auth.signInWithPassword({
+          email: emailIn.value.trim(),
+          password: pwIn.value,
+        });
+        btn.disabled = false;
+        if (error) {
+          errEl.textContent = error.message;
+          return;
+        }
+        boot();
+      },
+    },
+      h('h2', {}, 'BookHoard Admin'),
+      h('p', {}, 'Sign in with your admin account.'),
+      h('label', {}, 'Email'),
+      emailIn,
+      h('label', {}, 'Password'),
+      pwIn,
+      btn,
+      errEl,
+    );
+    wrap.append(form);
+    app.append(wrap);
+    setTimeout(() => emailIn.focus(), 50);
+  }
+
+  // ── shell ─────────────────────────────────────────────────────────────────
+  const SECTIONS = [
+    { id: 'users',          label: 'Users',           render: renderUsers },
+    { id: 'financial',      label: 'Financial',       render: renderFinancial },
+    { id: 'infrastructure', label: 'Infrastructure',  render: renderInfra },
+    { id: 'jobs',           label: 'Jobs',            render: renderJobs },
+    { id: 'errors',         label: 'Errors',          render: renderErrors },
+    { id: 'analytics',      label: 'Analytics',       render: renderAnalytics },
+  ];
+
+  function renderShell(email) {
+    app.innerHTML = '';
+    const header = h('header', {},
+      h('h1', {}, 'BookHoard Admin'),
+      h('div', { class: 'who' },
+        h('span', {}, email),
+        h('button', {
+          onclick: async () => { await supabase.auth.signOut(); renderLogin(); },
+        }, 'Sign out'),
+      ),
+    );
+    const main = h('main', {});
+    const tabs = h('div', { class: 'tabs' });
+    const panels = {};
+
+    for (const s of SECTIONS) {
+      const btn = h('button', {
+        onclick: () => activate(s.id),
+        'data-tab': s.id,
+      }, s.label);
+      tabs.append(btn);
+      const panel = h('div', { class: 'panel', 'data-panel': s.id });
+      panels[s.id] = panel;
+      main.append(panel);
+    }
+
+    main.prepend(tabs);
+    app.append(header, main);
+
+    const loaded = new Set();
+    function activate(id) {
+      for (const b of tabs.querySelectorAll('button')) {
+        b.classList.toggle('active', b.dataset.tab === id);
+      }
+      for (const p of main.querySelectorAll('.panel')) {
+        p.classList.toggle('active', p.dataset.panel === id);
+      }
+      if (!loaded.has(id)) {
+        loaded.add(id);
+        const section = SECTIONS.find(s => s.id === id);
+        section.render(panels[id]).catch(err => {
+          panels[id].innerHTML = '';
+          panels[id].append(h('div', { class: 'err' }, err.message));
+        });
+      }
+      history.replaceState(null, '', `#${id}`);
+    }
+
+    const initial = location.hash.slice(1);
+    activate(SECTIONS.find(s => s.id === initial) ? initial : SECTIONS[0].id);
+  }
+
+  // ── panels ────────────────────────────────────────────────────────────────
+  async function renderUsers(panel) {
+    panel.innerHTML = '';
+    const search = h('input', { type: 'search', placeholder: 'Search by email…' });
+    const goBtn = h('button', {}, 'Search');
+    const row = h('div', { class: 'search-row' }, search, goBtn);
+    const card = h('div', { class: 'card' });
+    panel.append(row, card);
+
+    async function load() {
+      card.innerHTML = '';
+      card.append(h('div', { class: 'loading' }, 'Loading users…'));
+      const q = search.value.trim() ? `?search=${encodeURIComponent(search.value.trim())}` : '';
+      const data = await adminFetch(`/users${q}`);
+      card.innerHTML = '';
+      const tbl = h('table', {});
+      tbl.append(h('thead', {}, h('tr', {},
+        h('th', {}, 'Email'),
+        h('th', {}, 'Joined'),
+        h('th', {}, 'Last sign-in'),
+        h('th', {}, 'Books'),
+        h('th', {}, 'Last book'),
+        h('th', {}, 'Top genres'),
+      )));
+      const tbody = h('tbody');
+      if (data.users.length === 0) {
+        card.append(h('div', { class: 'empty' }, 'No users found.'));
+        return;
+      }
+      for (const u of data.users) {
+        tbody.append(h('tr', {},
+          h('td', { class: 'mono' }, u.email ?? '—'),
+          h('td', {}, fmtDate(u.created_at)),
+          h('td', {}, fmtRelDate(u.last_sign_in_at)),
+          h('td', {}, fmtNum(u.book_count)),
+          h('td', {}, fmtRelDate(u.last_book_added)),
+          h('td', {}, u.top_genres.join(', ') || '—'),
+        ));
+      }
+      tbl.append(tbody);
+      card.append(h('h3', {}, `${data.users.length} users (page ${data.page})`), tbl);
+    }
+    goBtn.addEventListener('click', load);
+    search.addEventListener('keydown', e => { if (e.key === 'Enter') load(); });
+    await load();
+  }
+
+  async function renderFinancial(panel) {
+    panel.innerHTML = '';
+    panel.append(h('div', { class: 'loading' }, 'Loading financial data…'));
+    const data = await adminFetch('/financial');
+    panel.innerHTML = '';
+    if (data.status === 'not_configured') {
+      panel.append(notConfiguredCard('RevenueCat', data.reason));
+      return;
+    }
+    panel.append(
+      h('div', { class: 'card' },
+        h('h3', {}, 'Subscriptions'),
+        h('div', { class: 'stat-grid' },
+          stat('MRR', data.mrr ?? '—'),
+          stat('Active subscribers', data.activeSubscribers ?? '—'),
+          stat('Churn rate', data.churnRate ?? '—'),
+          stat('Trial conversions', data.trialConversions ?? '—'),
+        ),
+        data.reason ? h('p', { class: 'empty' }, data.reason) : null,
+      ),
+      data.sample
+        ? h('div', { class: 'card' },
+            h('h3', {}, 'Live customer sample'),
+            h('div', { class: 'stat-grid' },
+              stat('Customers in page', data.sample.customersInPage),
+              stat('Active in page',   data.sample.activeSubscribersInPage),
+            ),
+          )
+        : null,
+    );
+  }
+
+  async function renderInfra(panel) {
+    panel.innerHTML = '';
+    panel.append(h('div', { class: 'loading' }, 'Loading infrastructure stats…'));
+    const data = await adminFetch('/infrastructure');
+    panel.innerHTML = '';
+
+    // Supabase
+    const sb = data.supabase;
+    const sbCard = h('div', { class: 'card' }, h('h3', {}, 'Supabase'));
+    sbCard.append(h('div', { class: 'stat-grid' },
+      stat('DB size', sb.dbSizeBytes != null ? fmtBytes(sb.dbSizeBytes) : 'create RPC'),
+      ...Object.entries(sb.tableCounts).map(([t, n]) =>
+        stat(t, n != null ? fmtNum(n) : '—')),
+    ));
+    if (sb.dbSizeBytes == null) {
+      sbCard.append(h('p', { class: 'empty' },
+        'DB size requires a Postgres function. Run in Supabase SQL Editor: ',
+        h('code', { class: 'mono' }, "create function admin_db_size() returns bigint language sql security definer as $$ select pg_database_size(current_database()); $$;"),
+      ));
+    }
+    sbCard.append(h('p', { class: 'empty' }, `Bandwidth + edge function invocations: ${sb.bandwidth.reason}`));
+    panel.append(sbCard);
+
+    // Anthropic
+    panel.append(statusCard('Anthropic', data.anthropic));
+    // ISBNdb
+    const isb = data.isbndb;
+    panel.append(h('div', { class: 'card' },
+      h('h3', {}, 'ISBNdb'),
+      h('div', { class: 'stat-grid' },
+        stat('Plan', isb.plan ?? '—'),
+        stat('Daily limit', fmtNum(isb.dailyLimit)),
+      ),
+      h('p', { class: 'empty' }, isb.reason),
+    ));
+    // R2
+    panel.append(statusCard('Cloudflare R2 backups', data.r2));
+  }
+
+  async function renderJobs(panel) {
+    panel.innerHTML = '';
+    panel.append(h('div', { class: 'loading' }, 'Loading job status…'));
+    const data = await adminFetch('/jobs');
+    panel.innerHTML = '';
+
+    const gh = data.github;
+    if (gh.status === 'not_configured') {
+      panel.append(notConfiguredCard('GitHub Actions', gh.reason));
+    } else {
+      for (const r of gh.repos) {
+        const card = h('div', { class: 'card' }, h('h3', {}, r.repo));
+        if (r.error) {
+          card.append(h('div', { class: 'err' }, r.error));
+        } else if (!r.runs.length) {
+          card.append(h('div', { class: 'empty' }, 'No active workflows.'));
+        } else {
+          const tbl = h('table', {});
+          tbl.append(h('thead', {}, h('tr', {},
+            h('th', {}, 'Workflow'),
+            h('th', {}, 'Status'),
+            h('th', {}, 'Run'),
+            h('th', {}, 'Started'),
+            h('th', {}, 'Duration'),
+          )));
+          const tbody = h('tbody');
+          for (const run of r.runs) {
+            tbody.append(h('tr', {},
+              h('td', {}, run.workflow),
+              h('td', {}, jobBadge(run)),
+              h('td', {}, run.runNumber ? h('a', { href: run.url, target: '_blank' }, `#${run.runNumber}`) : '—'),
+              h('td', {}, run.startedAt ? fmtRelDate(run.startedAt) : '—'),
+              h('td', {}, run.durationSec != null ? `${run.durationSec}s` : '—'),
+            ));
+          }
+          tbl.append(tbody);
+          card.append(tbl);
+        }
+        panel.append(card);
+      }
+    }
+
+    // Supabase cron
+    const sc = data.supabaseCron;
+    const card = h('div', { class: 'card' }, h('h3', {}, 'Supabase scheduled functions'));
+    if (sc.status === 'error') {
+      card.append(h('div', { class: 'err' }, sc.reason));
+    } else {
+      const tbl = h('table', {});
+      tbl.append(h('thead', {}, h('tr', {},
+        h('th', {}, 'Job'),
+        h('th', {}, 'Last seen update'),
+        h('th', {}, 'Note'),
+      )));
+      const tbody = h('tbody');
+      for (const j of sc.jobs) {
+        tbody.append(h('tr', {},
+          h('td', {}, j.name),
+          h('td', {}, fmtRelDate(j.lastSeenUpdate)),
+          h('td', { class: 'empty' }, j.note),
+        ));
+      }
+      tbl.append(tbody);
+      card.append(tbl);
+    }
+    panel.append(card);
+  }
+
+  async function renderErrors(panel) {
+    panel.innerHTML = '';
+    panel.append(h('div', { class: 'loading' }, 'Loading Sentry…'));
+    const data = await adminFetch('/errors');
+    panel.innerHTML = '';
+
+    if (data.status === 'not_configured') {
+      panel.append(notConfiguredCard('Sentry', data.reason));
+      return;
+    }
+    if (data.status === 'error') {
+      panel.append(h('div', { class: 'card' }, h('div', { class: 'err' }, data.reason)));
+      return;
+    }
+    panel.append(
+      h('div', { class: 'card' },
+        h('h3', {}, 'Overview'),
+        h('div', { class: 'stat-grid' },
+          stat('Unresolved', data.unresolvedCount),
+          stat('Events (30d)', fmtNum(data.totalLast30d)),
+        ),
+      ),
+    );
+
+    const tbl = h('table', {});
+    tbl.append(h('thead', {}, h('tr', {},
+      h('th', {}, 'Issue'),
+      h('th', {}, 'Level'),
+      h('th', {}, 'Events'),
+      h('th', {}, 'Users'),
+      h('th', {}, 'Last seen'),
+    )));
+    const tbody = h('tbody');
+    if (data.issues.length === 0) {
+      tbody.append(h('tr', {}, h('td', { colspan: 5, class: 'empty' }, 'No unresolved issues 🎉'.replace('🎉', ''))));
+    }
+    for (const i of data.issues) {
+      tbody.append(h('tr', {},
+        h('td', {},
+          h('a', { href: i.url, target: '_blank' }, i.title),
+          i.culprit ? h('div', { class: 'empty mono' }, i.culprit) : null,
+        ),
+        h('td', {}, h('span', { class: levelBadge(i.level) }, i.level)),
+        h('td', {}, fmtNum(i.eventCount)),
+        h('td', {}, fmtNum(i.usersAffected)),
+        h('td', {}, fmtRelDate(i.lastSeen)),
+      ));
+    }
+    tbl.append(tbody);
+    panel.append(h('div', { class: 'card' }, h('h3', {}, 'Unresolved issues'), tbl));
+  }
+
+  async function renderAnalytics(panel) {
+    panel.innerHTML = '';
+    panel.append(h('div', { class: 'loading' }, 'Loading analytics…'));
+    const data = await adminFetch('/analytics');
+    panel.innerHTML = '';
+
+    const ph = data.posthog;
+    if (ph.status === 'not_configured') {
+      panel.append(notConfiguredCard('PostHog', ph.reason));
+    } else if (ph.status === 'error') {
+      panel.append(h('div', { class: 'card' }, h('h3', {}, 'PostHog'), h('div', { class: 'err' }, ph.reason)));
+    } else {
+      panel.append(
+        h('div', { class: 'card' },
+          h('h3', {}, 'PostHog'),
+          h('div', { class: 'stat-grid' },
+            stat('DAU today', fmtNum(ph.dauToday)),
+            stat('MAU', ph.mau != null ? fmtNum(ph.mau) : 'TODO'),
+            stat('Signups (30d)', fmtNum(ph.onboarding.signupsLast30d)),
+            stat('Onboarding done (30d)', fmtNum(ph.onboarding.completedLast30d)),
+            stat('Completion rate', fmtPct(ph.onboarding.completionRate)),
+          ),
+          ph.mauNote ? h('p', { class: 'empty' }, ph.mauNote) : null,
+        ),
+      );
+    }
+
+    const rs = data.resend;
+    if (rs.status === 'not_configured') {
+      panel.append(notConfiguredCard('Resend', rs.reason));
+    } else if (rs.status === 'error') {
+      panel.append(h('div', { class: 'card' }, h('h3', {}, 'Resend'), h('div', { class: 'err' }, rs.reason)));
+    } else {
+      const counts = rs.eventCounts || {};
+      panel.append(
+        h('div', { class: 'card' },
+          h('h3', {}, `Resend (last ${rs.sampleSize} emails)`),
+          h('div', { class: 'stat-grid' },
+            stat('Delivered', fmtNum(counts.delivered ?? 0)),
+            stat('Bounced', fmtNum(counts.bounced ?? 0)),
+            stat('Complained', fmtNum(counts.complained ?? 0)),
+            stat('Delivery rate', fmtPct(rs.deliveredRate)),
+            stat('Bounce rate', fmtPct(rs.bounceRate)),
+          ),
+        ),
+      );
+      if (rs.recent?.length) {
+        const tbl = h('table', {});
+        tbl.append(h('thead', {}, h('tr', {},
+          h('th', {}, 'To'), h('th', {}, 'Subject'), h('th', {}, 'Event'), h('th', {}, 'When'),
+        )));
+        const tbody = h('tbody');
+        for (const e of rs.recent) {
+          tbody.append(h('tr', {},
+            h('td', { class: 'mono' }, e.to.join(', ')),
+            h('td', {}, e.subject),
+            h('td', {}, e.lastEvent),
+            h('td', {}, fmtRelDate(e.createdAt)),
+          ));
+        }
+        tbl.append(tbody);
+        panel.append(h('div', { class: 'card' }, h('h3', {}, 'Recent emails'), tbl));
+      }
+    }
+  }
+
+  // ── small helpers ─────────────────────────────────────────────────────────
+  function stat(label, value, sub) {
+    return h('div', { class: 'stat' },
+      h('div', { class: 'label' }, label),
+      h('div', { class: 'value' }, value ?? '—'),
+      sub ? h('div', { class: 'sub' }, sub) : null,
+    );
+  }
+  function notConfiguredCard(name, reason) {
+    return h('div', { class: 'card' },
+      h('h3', {}, name),
+      h('p', {}, h('span', { class: 'badge badge-pending' }, 'not configured')),
+      h('p', { class: 'empty' }, reason),
+    );
+  }
+  function statusCard(name, payload) {
+    if (payload.status === 'ok') {
+      return h('div', { class: 'card' }, h('h3', {}, name), h('p', {}, 'OK'));
+    }
+    return h('div', { class: 'card' },
+      h('h3', {}, name),
+      h('p', {}, h('span', { class: 'badge badge-pending' }, payload.status?.replace(/_/g, ' ') ?? 'unknown')),
+      payload.reason ? h('p', { class: 'empty' }, payload.reason) : null,
+    );
+  }
+  function jobBadge(run) {
+    if (run.status === 'in_progress' || run.status === 'queued') {
+      return h('span', { class: 'badge badge-pending' }, run.status);
+    }
+    if (run.conclusion === 'success') return h('span', { class: 'badge badge-success' }, 'success');
+    if (run.conclusion === 'failure' || run.conclusion === 'cancelled' || run.conclusion === 'timed_out') {
+      return h('span', { class: 'badge badge-fail' }, run.conclusion);
+    }
+    return h('span', { class: 'badge badge-muted' }, run.conclusion ?? run.status);
+  }
+  function levelBadge(level) {
+    if (level === 'fatal' || level === 'error') return 'badge badge-fail';
+    if (level === 'warning') return 'badge badge-pending';
+    return 'badge badge-muted';
+  }
+
+  // ── boot ──────────────────────────────────────────────────────────────────
+  async function boot() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      renderLogin();
+      return;
+    }
+    renderShell(session.user.email);
+  }
+
+  boot();
+</script>
+
+</body>
+</html>
