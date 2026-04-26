@@ -571,6 +571,12 @@
         tbl.append(tbody);
         anCard.append(tbl);
       }
+    } else if (an.status === 'see_dashboard') {
+      anCard.append(
+        h('p', {}, h('span', { class: 'badge badge-muted' }, 'check console')),
+        h('p', { class: 'empty' }, an.reason),
+        h('p', {}, h('a', { href: an.dashboardUrl, target: '_blank' }, 'View Anthropic billing →')),
+      );
     } else if (an.status === 'not_configured') {
       anCard.append(h('p', {}, h('span', { class: 'badge badge-pending' }, 'not configured')), h('p', { class: 'empty' }, an.reason));
     } else {
