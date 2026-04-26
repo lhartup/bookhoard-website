@@ -197,6 +197,31 @@
       font: inherit;
       cursor: pointer;
     }
+
+    .row-actions { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+    .row-btn {
+      background: white;
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.6rem;
+      border-radius: 5px;
+      font: inherit;
+      font-size: 0.78rem;
+      color: var(--dark);
+      cursor: pointer;
+    }
+    .row-btn:hover:not(:disabled) { background: var(--border); }
+    .row-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .row-select {
+      padding: 0.3rem 0.4rem;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font: inherit;
+      font-size: 0.78rem;
+      background: white;
+    }
+    .row-status { font-size: 0.75rem; color: var(--muted); width: 100%; }
+    .row-status.ok  { color: var(--green); }
+    .row-status.err { color: var(--red); }
   </style>
 </head>
 <body>
@@ -257,11 +282,17 @@
     return `${d}d ago`;
   };
 
-  async function adminFetch(path) {
+  async function adminFetch(path, opts = {}) {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) throw new Error('Not authenticated');
+    const headers = {
+      Authorization: `Bearer ${session.access_token}`,
+      ...(opts.body ? { 'Content-Type': 'application/json' } : {}),
+    };
     const res = await fetch(`${BACKEND_URL}/api/admin${path}`, {
-      headers: { Authorization: `Bearer ${session.access_token}` },
+      method: opts.method ?? 'GET',
+      headers,
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
     });
     if (res.status === 403) throw new Error('Your account is not in the admin allowlist.');
     if (!res.ok) {
@@ -396,6 +427,7 @@
         h('th', {}, 'Books'),
         h('th', {}, 'Last book'),
         h('th', {}, 'Top genres'),
+        h('th', {}, 'Actions'),
       )));
       const tbody = h('tbody');
       if (data.users.length === 0) {
@@ -410,6 +442,7 @@
           h('td', {}, fmtNum(u.book_count)),
           h('td', {}, fmtRelDate(u.last_book_added)),
           h('td', {}, u.top_genres.join(', ') || '—'),
+          h('td', {}, userActions(u)),
         ));
       }
       tbl.append(tbody);
@@ -472,8 +505,56 @@
         h('code', { class: 'mono' }, "create function admin_db_size() returns bigint language sql security definer as $$ select pg_database_size(current_database()); $$;"),
       ));
     }
-    sbCard.append(h('p', { class: 'empty' }, `Bandwidth + edge function invocations: ${sb.bandwidth.reason}`));
     panel.append(sbCard);
+
+    // Bandwidth
+    const bw = sb.bandwidth;
+    const bwCard = h('div', { class: 'card' }, h('h3', {}, 'Bandwidth / egress'));
+    if (bw.status === 'see_dashboard') {
+      bwCard.append(
+        h('p', {}, 'Open in dashboard: ', h('a', { href: bw.dashboardUrl, target: '_blank' }, bw.dashboardUrl)),
+        h('p', { class: 'empty' }, bw.reason),
+      );
+    } else if (bw.status === 'not_configured') {
+      bwCard.append(h('p', {}, h('span', { class: 'badge badge-pending' }, 'not configured')), h('p', { class: 'empty' }, bw.reason));
+    } else {
+      bwCard.append(h('p', { class: 'empty' }, bw.reason ?? bw.status));
+    }
+    panel.append(bwCard);
+
+    // Edge functions
+    const ef = sb.edgeFunctions;
+    const efCard = h('div', { class: 'card' }, h('h3', {}, 'Edge functions'));
+    if (ef.status === 'ok') {
+      efCard.append(h('div', { class: 'stat-grid' }, stat('Functions', fmtNum(ef.count))));
+      if (ef.functions?.length) {
+        const tbl = h('table', {});
+        tbl.append(h('thead', {}, h('tr', {},
+          h('th', {}, 'Slug'),
+          h('th', {}, 'Name'),
+          h('th', {}, 'Status'),
+          h('th', {}, 'Updated'),
+        )));
+        const tbody = h('tbody');
+        for (const fn of ef.functions) {
+          tbody.append(h('tr', {},
+            h('td', { class: 'mono' }, fn.slug),
+            h('td', {}, fn.name),
+            h('td', {}, fn.status),
+            h('td', {}, fmtRelDate(fn.updatedAt)),
+          ));
+        }
+        tbl.append(tbody);
+        efCard.append(tbl);
+      }
+      efCard.append(h('p', { class: 'empty' }, ef.invocationsNote, ' '),
+        h('p', {}, h('a', { href: ef.dashboardUrl, target: '_blank' }, 'Open functions dashboard →')));
+    } else if (ef.status === 'not_configured') {
+      efCard.append(h('p', {}, h('span', { class: 'badge badge-pending' }, 'not configured')), h('p', { class: 'empty' }, ef.reason));
+    } else {
+      efCard.append(h('div', { class: 'err' }, ef.reason ?? ef.status));
+    }
+    panel.append(efCard);
 
     // Anthropic
     panel.append(statusCard('Anthropic', data.anthropic));
@@ -675,6 +756,52 @@
         panel.append(h('div', { class: 'card' }, h('h3', {}, 'Recent emails'), tbl));
       }
     }
+  }
+
+  function userActions(user) {
+    const status = h('div', { class: 'row-status' }, '');
+    const setStatus = (msg, kind) => {
+      status.textContent = msg;
+      status.className = `row-status ${kind || ''}`;
+    };
+
+    const resetBtn = h('button', { class: 'row-btn', onclick: async () => {
+      if (!confirm(`Send password reset email to ${user.email}?`)) return;
+      resetBtn.disabled = true;
+      setStatus('Sending…');
+      try {
+        const r = await adminFetch(`/users/${user.id}/reset-password`, { method: 'POST' });
+        setStatus(`Sent to ${r.sentTo}`, 'ok');
+      } catch (err) {
+        setStatus(err.message, 'err');
+      } finally {
+        resetBtn.disabled = false;
+      }
+    }}, 'Reset password');
+
+    const durationSel = h('select', { class: 'row-select' },
+      h('option', { value: 'monthly' }, '1 month'),
+      h('option', { value: 'three_month' }, '3 months'),
+      h('option', { value: 'yearly' }, '1 year'),
+      h('option', { value: 'lifetime' }, 'Lifetime'),
+    );
+
+    const grantBtn = h('button', { class: 'row-btn', onclick: async () => {
+      const dur = durationSel.value;
+      if (!confirm(`Grant Hoard+ (${durationSel.options[durationSel.selectedIndex].text}) to ${user.email}?`)) return;
+      grantBtn.disabled = true;
+      setStatus('Granting…');
+      try {
+        await adminFetch(`/users/${user.id}/grant-premium`, { method: 'POST', body: { duration: dur } });
+        setStatus(`Granted ${dur}`, 'ok');
+      } catch (err) {
+        setStatus(err.message, 'err');
+      } finally {
+        grantBtn.disabled = false;
+      }
+    }}, 'Grant Hoard+');
+
+    return h('div', { class: 'row-actions' }, resetBtn, durationSel, grantBtn, status);
   }
 
   // ── small helpers ─────────────────────────────────────────────────────────
