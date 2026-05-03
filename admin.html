@@ -584,6 +584,91 @@
     }
     panel.append(anCard);
 
+    // Gemini (shelf-scan vision provider)
+    const gem = data.gemini;
+    const gemCard = h('div', { class: 'card' }, h('h3', {}, 'Google Gemini — shelf scan'));
+    if (gem.status === 'ok') {
+      // Model availability badge — green if model is in Google's models list,
+      // red if missing (deprecation/retirement signal). Same logic as the
+      // gemini-model-check.yml GitHub Actions workflow.
+      let availabilityBadge;
+      if (gem.modelAvailable === true) {
+        availabilityBadge = h('span', { class: 'badge badge-success' }, 'available');
+      } else if (gem.modelAvailable === false) {
+        availabilityBadge = h('span', { class: 'badge badge-fail' }, 'NOT in models API — deprecated?');
+      } else {
+        availabilityBadge = h('span', { class: 'badge badge-muted' }, gem.modelsApiError ? 'check failed' : 'unknown');
+      }
+
+      gemCard.append(h('p', {},
+        h('strong', {}, 'Model: '), h('code', { class: 'mono' }, gem.model), ' ', availabilityBadge,
+      ));
+
+      gemCard.append(h('div', { class: 'stat-grid' },
+        stat('Scans this month', gem.scanCount != null ? fmtNum(gem.scanCount) : '—'),
+        stat('Per-scan estimate', `$${gem.perScanUsdEstimate.toFixed(4)}`),
+        stat('Estimated spend', gem.estimatedSpendUsd != null ? `$${gem.estimatedSpendUsd.toFixed(2)}` : '—'),
+      ));
+
+      gemCard.append(h('p', { class: 'empty' }, gem.note));
+
+      // Deprecation monitor — gemini-model-check.yml run health
+      const wf = gem.workflow;
+      if (wf) {
+        let wfBadge, wfSub;
+        if (wf.status === 'ok') {
+          if (wf.lastRunConclusion === 'failure') {
+            // Highest-priority signal: workflow failed (model probably deprecated).
+            wfBadge = h('span', { class: 'badge badge-fail' }, 'FAILED — model may be deprecated');
+            wfSub = h('a', { href: wf.lastRunUrl, target: '_blank' }, `run #${wf.runNumber} · ${fmtRelDate(wf.lastRunAt)} →`);
+          } else if (wf.stale) {
+            // Cron not firing — the monitor itself isn't healthy.
+            wfBadge = h('span', { class: 'badge badge-pending' }, `stale — last ran ${wf.ageDays}d ago`);
+            wfSub = h('a', { href: wf.lastRunUrl, target: '_blank' }, `run #${wf.runNumber} →`);
+          } else if (wf.lastRunStatus === 'in_progress' || wf.lastRunStatus === 'queued') {
+            wfBadge = h('span', { class: 'badge badge-muted' }, `${wf.lastRunStatus}…`);
+            wfSub = h('a', { href: wf.lastRunUrl, target: '_blank' }, `run #${wf.runNumber} →`);
+          } else if (wf.lastRunConclusion === 'success') {
+            wfBadge = h('span', { class: 'badge badge-success' }, 'passing');
+            wfSub = h('a', { href: wf.lastRunUrl, target: '_blank' }, `run #${wf.runNumber} · ${fmtRelDate(wf.lastRunAt)} →`);
+          } else {
+            wfBadge = h('span', { class: 'badge badge-muted' }, `${wf.lastRunConclusion ?? wf.lastRunStatus}`);
+            wfSub = h('a', { href: wf.lastRunUrl, target: '_blank' }, `run #${wf.runNumber} →`);
+          }
+        } else if (wf.status === 'never_run') {
+          wfBadge = h('span', { class: 'badge badge-pending' }, 'never run');
+          wfSub = wf.reason;
+        } else if (wf.status === 'not_configured') {
+          wfBadge = h('span', { class: 'badge badge-muted' }, 'GITHUB_TOKEN not set');
+          wfSub = wf.reason;
+        } else {
+          wfBadge = h('span', { class: 'badge badge-fail' }, 'check failed');
+          wfSub = wf.reason;
+        }
+        gemCard.append(h('div', { class: 'stat-grid', style: 'margin-top: 0.75rem;' },
+          stat('Deprecation monitor', wfBadge, wfSub),
+        ));
+      }
+
+      gemCard.append(h('p', {},
+        h('a', { href: gem.dashboardUrl, target: '_blank' }, 'AI Studio usage →'),
+        ' · ',
+        h('a', { href: gem.billingUrl, target: '_blank' }, 'Cloud billing →'),
+      ));
+      if (gem.modelsApiError) {
+        gemCard.append(h('p', { class: 'empty' }, h('strong', {}, 'Models API error: '), gem.modelsApiError));
+      }
+    } else if (gem.status === 'not_configured') {
+      gemCard.append(
+        h('p', {}, h('span', { class: 'badge badge-pending' }, 'not configured')),
+        h('p', { class: 'empty' }, gem.reason),
+        h('p', {}, h('a', { href: gem.dashboardUrl, target: '_blank' }, 'AI Studio usage →')),
+      );
+    } else {
+      gemCard.append(h('div', { class: 'err' }, gem.reason ?? gem.status));
+    }
+    panel.append(gemCard);
+
     // ISBNdb
     const isb = data.isbndb;
     panel.append(h('div', { class: 'card' },
