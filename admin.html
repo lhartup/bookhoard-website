@@ -424,13 +424,13 @@
       tbl.append(h('thead', {}, h('tr', {},
         h('th', {}, 'Email'),
         h('th', {}, 'Joined'),
-        h('th', {}, 'Last sign-in'),
+        h('th', {}, 'Last seen'),
         h('th', {}, 'Books'),
-        h('th', {}, 'Last book'),
-        h('th', {}, 'Top genres'),
         h('th', {}, 'Plan'),
         h('th', {}, 'Platform'),
+        h('th', {}, 'Device'),
         h('th', {}, 'App ver'),
+        h('th', {}, 'Sessions (30d)'),
         h('th', {}, 'Actions'),
       )));
       const tbody = h('tbody');
@@ -442,16 +442,25 @@
         const platformLabel = u.os
           ? `${u.os}${u.os_version ? ` ${u.os_version}` : ''}`
           : '—';
+        const appVerLabel = u.app_version
+          ? (u.app_build ? `${u.app_version} (${u.app_build})` : u.app_version)
+          : '—';
+        // Use last_seen (PostHog activity) over last_sign_in_at (Supabase auth)
+        // because PostHog reflects actual app open / event activity, which is
+        // closer to TestFlight's "last seen" semantics. Tooltip shows the
+        // book count + top genres so we don't lose those columns entirely.
+        const detailTip = `${fmtNum(u.book_count)} books · ${u.top_genres.join(', ') || 'no genres'}` +
+          (u.last_book_added ? ` · last book ${fmtRelDate(u.last_book_added)}` : '');
         tbody.append(h('tr', {},
-          h('td', { class: 'mono' }, u.email ?? '—'),
+          h('td', { class: 'mono', title: u.id }, u.email ?? '—'),
           h('td', {}, fmtDate(u.created_at)),
-          h('td', {}, fmtRelDate(u.last_sign_in_at)),
+          h('td', { title: detailTip }, fmtRelDate(u.last_seen_at ?? u.last_sign_in_at)),
           h('td', {}, fmtNum(u.book_count)),
-          h('td', {}, fmtRelDate(u.last_book_added)),
-          h('td', {}, u.top_genres.join(', ') || '—'),
           h('td', {}, planBadge(u)),
-          h('td', { title: u.last_seen_at ? `Last seen ${fmtRelDate(u.last_seen_at)}` : '' }, platformLabel),
-          h('td', { class: 'mono' }, u.app_version || '—'),
+          h('td', {}, platformLabel),
+          h('td', {}, u.device || '—'),
+          h('td', { class: 'mono' }, appVerLabel),
+          h('td', {}, fmtNum(u.sessions_30d ?? 0)),
           h('td', {}, userActions(u)),
         ));
       }
