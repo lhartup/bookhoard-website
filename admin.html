@@ -431,6 +431,7 @@
         h('th', {}, 'Device'),
         h('th', {}, 'App ver'),
         h('th', {}, 'Sessions (30d)'),
+        h('th', {}, 'Crashes (30d)'),
         h('th', {}, 'Actions'),
       )));
       const tbody = h('tbody');
@@ -461,6 +462,11 @@
           h('td', {}, u.device || '—'),
           h('td', { class: 'mono' }, appVerLabel),
           h('td', {}, fmtNum(u.sessions_30d ?? 0)),
+          h('td', {
+            title: u.crashes_30d == null
+              ? 'Sentry not configured, or app does not call Sentry.setUser yet'
+              : '',
+          }, u.crashes_30d == null ? '—' : fmtNum(u.crashes_30d)),
           h('td', {}, userActions(u)),
         ));
       }
