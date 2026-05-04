@@ -429,6 +429,8 @@
         h('th', {}, 'Last book'),
         h('th', {}, 'Top genres'),
         h('th', {}, 'Plan'),
+        h('th', {}, 'Platform'),
+        h('th', {}, 'App ver'),
         h('th', {}, 'Actions'),
       )));
       const tbody = h('tbody');
@@ -437,6 +439,9 @@
         return;
       }
       for (const u of data.users) {
+        const platformLabel = u.os
+          ? `${u.os}${u.os_version ? ` ${u.os_version}` : ''}`
+          : '—';
         tbody.append(h('tr', {},
           h('td', { class: 'mono' }, u.email ?? '—'),
           h('td', {}, fmtDate(u.created_at)),
@@ -445,6 +450,8 @@
           h('td', {}, fmtRelDate(u.last_book_added)),
           h('td', {}, u.top_genres.join(', ') || '—'),
           h('td', {}, planBadge(u)),
+          h('td', { title: u.last_seen_at ? `Last seen ${fmtRelDate(u.last_seen_at)}` : '' }, platformLabel),
+          h('td', { class: 'mono' }, u.app_version || '—'),
           h('td', {}, userActions(u)),
         ));
       }
@@ -862,6 +869,64 @@
           ph.mauNote ? h('p', { class: 'empty' }, ph.mauNote) : null,
         ),
       );
+
+      // Platform breakdown — iOS vs Android, app versions, OS versions (last 30d)
+      const platforms = ph.platforms;
+      if (platforms) {
+        const platformCard = h('div', { class: 'card' }, h('h3', {}, 'Platforms (last 30d)'));
+
+        // OS breakdown — single stat-grid row of "iOS: 42 (60%)" etc.
+        const totalOsUsers = (platforms.os ?? []).reduce((sum, r) => sum + (r.users ?? 0), 0);
+        if (totalOsUsers > 0) {
+          platformCard.append(
+            h('div', { class: 'stat-grid' },
+              ...platforms.os.map(r => stat(r.os || 'unknown',
+                `${fmtNum(r.users)} (${fmtPct(r.users / totalOsUsers)})`)),
+            ),
+          );
+        } else {
+          platformCard.append(h('p', { class: 'empty' }, 'No platform events in last 30d.'));
+        }
+
+        // App version distribution
+        if ((platforms.appVersions ?? []).length > 0) {
+          const tbl = h('table', {});
+          tbl.append(h('thead', {}, h('tr', {},
+            h('th', {}, 'App version'), h('th', {}, 'Users'), h('th', {}, '% of users'),
+          )));
+          const tbody = h('tbody');
+          const totalApp = platforms.appVersions.reduce((s, r) => s + (r.users ?? 0), 0) || 1;
+          for (const r of platforms.appVersions) {
+            tbody.append(h('tr', {},
+              h('td', { class: 'mono' }, r.version || '—'),
+              h('td', {}, fmtNum(r.users)),
+              h('td', {}, fmtPct(r.users / totalApp)),
+            ));
+          }
+          tbl.append(tbody);
+          platformCard.append(h('h4', { style: 'margin-top: 1rem;' }, 'App version distribution'), tbl);
+        }
+
+        // OS version distribution — top 20
+        if ((platforms.osVersions ?? []).length > 0) {
+          const tbl = h('table', {});
+          tbl.append(h('thead', {}, h('tr', {},
+            h('th', {}, 'OS'), h('th', {}, 'Version'), h('th', {}, 'Users'),
+          )));
+          const tbody = h('tbody');
+          for (const r of platforms.osVersions) {
+            tbody.append(h('tr', {},
+              h('td', {}, r.os || '—'),
+              h('td', { class: 'mono' }, r.version || '—'),
+              h('td', {}, fmtNum(r.users)),
+            ));
+          }
+          tbl.append(tbody);
+          platformCard.append(h('h4', { style: 'margin-top: 1rem;' }, 'OS version (top 20)'), tbl);
+        }
+
+        panel.append(platformCard);
+      }
     }
 
     const rs = data.resend;
