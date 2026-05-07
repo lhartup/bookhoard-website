@@ -580,6 +580,71 @@
     }
     panel.append(efCard);
 
+    // AI spend projection — aggregate (Anthropic + Gemini), MTD + linear projection
+    const ai = data.aiSpend;
+    if (ai && ai.status === 'ok') {
+      const trendArrow = ai.projectedMonthlyUsd > 0
+        ? `(daily avg $${ai.dailyAverageUsd.toFixed(3)} × ${ai.daysInMonth} days)`
+        : '';
+      const aiCard = h('div', { class: 'card' },
+        h('h3', {}, 'AI spend (this month)'),
+        h('div', { class: 'stat-grid' },
+          stat('Month-to-date', `$${ai.monthToDateUsd.toFixed(2)}`),
+          stat('Projected total', `$${ai.projectedMonthlyUsd.toFixed(2)}`, trendArrow),
+          stat('Daily average', `$${ai.dailyAverageUsd.toFixed(3)}`),
+          stat('Calls this month', fmtNum(ai.callCount)),
+        ),
+      );
+
+      // Provider breakdown — flat row, Gemini vs Anthropic
+      const providers = Object.entries(ai.byProvider ?? {});
+      if (providers.length > 0) {
+        aiCard.append(
+          h('h4', { style: 'margin-top: 1rem;' }, 'By provider'),
+          h('div', { class: 'stat-grid' },
+            ...providers.map(([p, c]) => stat(p, `$${c.totalUsd.toFixed(3)}`)),
+          ),
+        );
+      }
+
+      // Feature breakdown — scan_shelf vs recommend (For You) vs similar
+      const features = Object.entries(ai.byFunction ?? {})
+        .sort((a, b) => (b[1].usd ?? 0) - (a[1].usd ?? 0));
+      if (features.length > 0) {
+        const featureLabels = {
+          scan_shelf: 'Shelf scan (Gemini)',
+          recommend: 'For You (Anthropic)',
+          similar: 'Similar Books (Anthropic)',
+        };
+        const tbl = h('table', {});
+        tbl.append(h('thead', {}, h('tr', {},
+          h('th', {}, 'Feature'), h('th', {}, 'Calls'), h('th', {}, 'Cost'),
+        )));
+        const tbody = h('tbody');
+        for (const [fn, c] of features) {
+          tbody.append(h('tr', {},
+            h('td', {}, featureLabels[fn] || fn),
+            h('td', {}, fmtNum(c.count)),
+            h('td', { class: 'mono' }, `$${c.usd.toFixed(3)}`),
+          ));
+        }
+        tbl.append(tbody);
+        aiCard.append(h('h4', { style: 'margin-top: 1rem;' }, 'By feature'), tbl);
+      }
+
+      if (ai.estimatedRows > 0) {
+        aiCard.append(h('p', { class: 'empty' },
+          `${ai.estimatedRows} call(s) priced from per-call estimate (no token data — pre-migration row or unknown model). ${ai.exactRows} call(s) token-priced.`,
+        ));
+      }
+      panel.append(aiCard);
+    } else if (ai && ai.status === 'error') {
+      panel.append(h('div', { class: 'card' },
+        h('h3', {}, 'AI spend (this month)'),
+        h('div', { class: 'err' }, ai.reason),
+      ));
+    }
+
     // Anthropic
     const an = data.anthropic;
     const anCard = h('div', { class: 'card' }, h('h3', {}, 'Anthropic spend (this month)'));
