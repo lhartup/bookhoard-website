@@ -432,6 +432,7 @@
         h('th', {}, 'App ver'),
         h('th', {}, 'Sessions (30d)'),
         h('th', {}, 'Crashes (30d)'),
+        h('th', {}, 'AI cost (30d)'),
         h('th', {}, 'Actions'),
       )));
       const tbody = h('tbody');
@@ -467,6 +468,11 @@
               ? 'Sentry not configured, or app does not call Sentry.setUser yet'
               : '',
           }, u.crashes_30d == null ? '—' : fmtNum(u.crashes_30d)),
+          h('td', {
+            title: (u.ai_cost_estimated_rows ?? 0) > 0
+              ? `${u.ai_cost_estimated_rows} call(s) priced from per-call estimate (no token data — pre-migration row or unknown model)`
+              : 'All calls priced from token usage',
+          }, `$${(u.ai_cost_30d_usd ?? 0).toFixed(3)}`),
           h('td', {}, userActions(u)),
         ));
       }
